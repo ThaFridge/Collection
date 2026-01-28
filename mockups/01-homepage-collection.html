@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Collection - Mockup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; }
+
+        /* NAV */
+        nav { background: #1a1a2e; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 2px solid #6c63ff; }
+        nav .logo { font-size: 1.4rem; font-weight: 700; color: #6c63ff; }
+        nav .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        nav .nav-links a { color: #aaa; text-decoration: none; font-size: 0.95rem; padding: 0.4rem 0.8rem; border-radius: 6px; transition: all 0.2s; }
+        nav .nav-links a:hover, nav .nav-links a.active { color: #fff; background: rgba(108,99,255,0.2); }
+        nav .nav-links a.active { color: #6c63ff; font-weight: 600; }
+
+        /* STATS BAR */
+        .stats-bar { background: #1a1a2e; padding: 1rem 2rem; display: flex; gap: 2rem; border-bottom: 1px solid #2a2a3e; }
+        .stat-item { text-align: center; }
+        .stat-item .stat-number { font-size: 1.5rem; font-weight: 700; color: #6c63ff; }
+        .stat-item .stat-label { font-size: 0.75rem; color: #888; text-transform: uppercase; }
+
+        /* TOOLBAR */
+        .toolbar { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .toolbar h1 { font-size: 1.6rem; color: #fff; }
+        .toolbar-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .search-input { background: #1a1a2e; border: 1px solid #333; color: #fff; padding: 0.5rem 1rem; border-radius: 8px; width: 250px; font-size: 0.9rem; }
+        .search-input::placeholder { color: #666; }
+        .filter-select { background: #1a1a2e; border: 1px solid #333; color: #fff; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.85rem; }
+        .btn { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; }
+        .btn-primary { background: #6c63ff; color: #fff; }
+        .btn-primary:hover { background: #5a52d5; }
+
+        /* GAME GRID */
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; padding: 0 2rem 2rem; }
+        .game-card { background: #1a1a2e; border-radius: 12px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
+        .game-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(108,99,255,0.3); }
+        .game-card .cover { width: 100%; aspect-ratio: 3/4; background: #2a2a3e; display: flex; align-items: center; justify-content: center; color: #555; font-size: 0.8rem; overflow: hidden; }
+        .game-card .cover img { width: 100%; height: 100%; object-fit: cover; }
+        .game-card .info { padding: 0.75rem; }
+        .game-card .info .title { font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .game-card .info .platform { font-size: 0.7rem; color: #6c63ff; font-weight: 500; }
+        .game-card .info .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem; }
+        .game-card .info .meta .condition { font-size: 0.65rem; color: #888; }
+        .game-card .info .meta .rating { color: #f5c518; font-size: 0.75rem; }
+        .badge { position: absolute; top: 8px; right: 8px; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 600; }
+        .badge-playing { background: #22c55e; color: #000; }
+        .badge-completed { background: #6c63ff; color: #fff; }
+        .badge-physical { background: rgba(0,0,0,0.6); color: #ccc; position: absolute; top: 8px; left: 8px; }
+        .badge-digital { background: rgba(0,0,0,0.6); color: #3b82f6; position: absolute; top: 8px; left: 8px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .game-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; padding: 0 1rem 1rem; }
+            .toolbar { padding: 1rem; }
+            .stats-bar { flex-wrap: wrap; gap: 1rem; padding: 1rem; }
+            nav { padding: 0 1rem; }
+            .search-input { width: 180px; }
+        }
+    </style>
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js"></script>
+</head>
+<body>
+    <!-- NAVIGATIE -->
+    <nav>
+        <div class="logo">GameVault</div>
+        <div class="nav-links">
+            <a href="#" class="active">Collectie</a>
+            <a href="02-wishlist.html">Wishlist</a>
+            <a href="05-statistics.html">Statistieken</a>
+            <a href="06-admin-panel.html">Admin</a>
+            <button class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+
+    <!-- STATISTIEKEN BALK -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number">127</div>
+            <div class="stat-label">Games</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">8</div>
+            <div class="stat-label">Platforms</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">23</div>
+            <div class="stat-label">Uitgespeeld</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">&euro;2.340</div>
+            <div class="stat-label">Waarde</div>
+        </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+        <h1>Mijn Collectie</h1>
+        <div class="toolbar-actions">
+            <input type="text" class="search-input" placeholder="Zoek in collectie...">
+            <select class="filter-select">
+                <option>Alle Platforms</option>
+                <option>PlayStation 5</option>
+                <option>Xbox Series X</option>
+                <option>Nintendo Switch</option>
+                <option>PC / Steam</option>
+                <option>PlayStation 4</option>
+                <option>Xbox 360</option>
+            </select>
+            <select class="filter-select">
+                <option>Alle Status</option>
+                <option>Niet gespeeld</option>
+                <option>Bezig</option>
+                <option>Uitgespeeld</option>
+                <option>Platinum</option>
+            </select>
+            <a href="03-add-game.html" class="btn btn-primary">+ Game Toevoegen</a>
+        </div>
+    </div>
+
+    <!-- GAME GRID -->
+    <div class="game-grid">
+        <div class="game-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #1a3a5c, #0d1b2a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#4a9eff;">Halo Infinite</div></div>
+            <span class="badge badge-playing">Bezig</span>
+            <span class="badge-physical">Fysiek</span>
+            <div class="info">
+                <div class="title">Halo Infinite</div>
+                <div class="platform">Xbox Series X</div>
+                <div class="meta">
+                    <span class="condition">Nieuw</span>
+                    <span class="rating">&#9733; 8</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #1a3a5c, #0d1b2a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#4a9eff;">Halo Infinite</div></div>
+            <span class="badge-digital">Digitaal</span>
+            <div class="info">
+                <div class="title">Halo Infinite</div>
+                <div class="platform">PC / Steam</div>
+                <div class="meta">
+                    <span class="condition">Digitaal</span>
+                    <span class="rating">&#9733; 8</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #2d1b00, #4a2800); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:#ff9800;">Half-Life 2</div></div>
+            <span class="badge badge-completed">Uitgespeeld</span>
+            <span class="badge-physical">Fysiek</span>
+            <div class="info">
+                <div class="title">Half-Life 2</div>
+                <div class="platform">Xbox 360</div>
+                <div class="meta">
+                    <span class="condition">Goed</span>
+                    <span class="rating">&#9733; 10</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #2d1b00, #4a2800); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:#ff9800;">Half-Life 2</div></div>
+            <span class="badge badge-completed">Uitgespeeld</span>
+            <span class="badge-digital">Digitaal</span>
+            <div class="info">
+                <div class="title">Half-Life 2</div>
+                <div class="platform">PC / Steam</div>
+                <div class="meta">
+                    <span class="condition">Digitaal</span>
+                    <span class="rating">&#9733; 10</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #0a2a1a, #1a4a3a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#22c55e;">Zelda: TotK</div></div>
+            <span class="badge badge-playing">Bezig</span>
+            <span class="badge-physical">Fysiek</span>
+            <div class="info">
+                <div class="title">Zelda: Tears of the Kingdom</div>
+                <div class="platform">Nintendo Switch</div>
+                <div class="meta">
+                    <span class="condition">Nieuw</span>
+                    <span class="rating">&#9733; 9</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #1a1a3e, #2a1a4e); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#a78bfa;">God of War Ragnarok</div></div>
+            <span class="badge badge-completed">Uitgespeeld</span>
+            <span class="badge-physical">Fysiek</span>
+            <div class="info">
+                <div class="title">God of War Ragnarok</div>
+                <div class="platform">PlayStation 5</div>
+                <div class="meta">
+                    <span class="condition">Nieuw</span>
+                    <span class="rating">&#9733; 9</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #3a1a1a, #5a2020); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#ef4444;">Red Dead 2</div></div>
+            <span class="badge-physical">Fysiek</span>
+            <div class="info">
+                <div class="title">Red Dead Redemption 2</div>
+                <div class="platform">PlayStation 4</div>
+                <div class="meta">
+                    <span class="condition">Goed</span>
+                    <span class="rating">&#9733; 10</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #2a2a0a, #4a4a1a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#eab308;">Cyberpunk 2077</div></div>
+            <span class="badge-digital">Digitaal</span>
+            <div class="info">
+                <div class="title">Cyberpunk 2077</div>
+                <div class="platform">PC / Steam</div>
+                <div class="meta">
+                    <span class="condition">Digitaal</span>
+                    <span class="rating">&#9733; 7</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #0a1a2a, #1a3a5a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#38bdf8;">Elden Ring</div></div>
+            <span class="badge badge-playing">Bezig</span>
+            <span class="badge-physical">Fysiek</span>
+            <div class="info">
+                <div class="title">Elden Ring</div>
+                <div class="platform">PlayStation 5</div>
+                <div class="meta">
+                    <span class="condition">Nieuw</span>
+                    <span class="rating">&#9733; 9</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #1a0a2a, #3a1a5a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#c084fc;">Spiderman 2</div></div>
+            <span class="badge-physical">Fysiek</span>
+            <div class="info">
+                <div class="title">Marvel's Spider-Man 2</div>
+                <div class="platform">PlayStation 5</div>
+                <div class="meta">
+                    <span class="condition">Nieuw</span>
+                    <span class="rating">&#9733; 8</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

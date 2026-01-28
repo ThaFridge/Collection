@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGO Collectie - Mockup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; }
+        nav { background: #1a1a2e; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 2px solid #6c63ff; }
+        nav .logo { font-size: 1.4rem; font-weight: 700; color: #6c63ff; }
+        nav .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        nav .nav-links a { color: #aaa; text-decoration: none; font-size: 0.95rem; padding: 0.4rem 0.8rem; border-radius: 6px; transition: all 0.2s; }
+        nav .nav-links a:hover, nav .nav-links a.active { color: #fff; background: rgba(108,99,255,0.2); }
+        nav .nav-links a.active { color: #6c63ff; font-weight: 600; }
+
+        /* CATEGORY TABS */
+        .category-tabs { background: #1a1a2e; padding: 0 2rem; display: flex; gap: 0; border-bottom: 1px solid #2a2a3e; }
+        .category-tab { padding: 0.75rem 1.5rem; color: #888; text-decoration: none; font-size: 0.9rem; font-weight: 500; border-bottom: 3px solid transparent; transition: all 0.2s; }
+        .category-tab:hover { color: #fff; }
+        .category-tab.active { color: #f59e0b; border-bottom-color: #f59e0b; }
+        .category-tab .tab-icon { margin-right: 0.4rem; }
+
+        /* STATS BAR */
+        .stats-bar { background: #1a1a2e; padding: 1rem 2rem; display: flex; gap: 2rem; border-bottom: 1px solid #2a2a3e; }
+        .stat-item { text-align: center; }
+        .stat-item .stat-number { font-size: 1.5rem; font-weight: 700; color: #f59e0b; }
+        .stat-item .stat-label { font-size: 0.75rem; color: #888; text-transform: uppercase; }
+
+        /* TOOLBAR */
+        .toolbar { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .toolbar h1 { font-size: 1.6rem; color: #fff; }
+        .toolbar-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .search-input { background: #1a1a2e; border: 1px solid #333; color: #fff; padding: 0.5rem 1rem; border-radius: 8px; width: 250px; font-size: 0.9rem; }
+        .search-input::placeholder { color: #666; }
+        .filter-select { background: #1a1a2e; border: 1px solid #333; color: #fff; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.85rem; }
+        .btn { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #f59e0b; color: #000; }
+        .btn-primary:hover { background: #d97706; }
+
+        /* LEGO GRID */
+        .lego-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; padding: 0 2rem 2rem; }
+        .lego-card { background: #1a1a2e; border-radius: 12px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
+        .lego-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(245,158,11,0.25); }
+        .lego-card .cover { width: 100%; aspect-ratio: 4/3; background: #2a2a3e; display: flex; align-items: center; justify-content: center; color: #555; font-size: 0.8rem; overflow: hidden; }
+        .lego-card .info { padding: 0.75rem; }
+        .lego-card .info .set-number { font-size: 0.7rem; color: #f59e0b; font-weight: 600; margin-bottom: 0.15rem; }
+        .lego-card .info .title { font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lego-card .info .theme-label { font-size: 0.7rem; color: #888; margin-bottom: 0.4rem; }
+        .lego-card .info .meta { display: flex; justify-content: space-between; align-items: center; }
+        .lego-card .info .meta .pieces { font-size: 0.7rem; color: #888; }
+        .lego-card .info .meta .price { font-size: 0.75rem; color: #22c55e; font-weight: 600; }
+
+        .badge { position: absolute; top: 8px; right: 8px; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 600; }
+        .badge-built { background: #22c55e; color: #000; }
+        .badge-building { background: #f59e0b; color: #000; }
+        .badge-displayed { background: #6c63ff; color: #fff; }
+        .badge-sealed { background: rgba(0,0,0,0.6); color: #ccc; position: absolute; top: 8px; left: 8px; }
+
+        .instructions-link { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.65rem; color: #6c63ff; text-decoration: none; margin-top: 0.3rem; }
+        .instructions-link:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            .lego-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; padding: 0 1rem 1rem; }
+            .toolbar { padding: 1rem; }
+            .stats-bar { flex-wrap: wrap; gap: 1rem; padding: 1rem; }
+            nav { padding: 0 1rem; }
+            .search-input { width: 180px; }
+            .category-tabs { padding: 0 1rem; overflow-x: auto; }
+        }
+    </style>
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">GameVault</div>
+        <div class="nav-links">
+            <a href="01-homepage-collection.html">Collectie</a>
+            <a href="02-wishlist.html">Wishlist</a>
+            <a href="05-statistics.html">Statistieken</a>
+            <a href="06-admin-panel.html">Admin</a>
+            <button class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+
+    <!-- CATEGORIE TABS -->
+    <div class="category-tabs">
+        <a href="01-homepage-collection.html" class="category-tab"><span class="tab-icon">&#127918;</span> Games</a>
+        <a href="#" class="category-tab active"><span class="tab-icon">&#129521;</span> LEGO</a>
+    </div>
+
+    <!-- STATISTIEKEN BALK -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number">34</div>
+            <div class="stat-label">Sets</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">12</div>
+            <div class="stat-label">Thema's</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">18</div>
+            <div class="stat-label">Gebouwd</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">48.291</div>
+            <div class="stat-label">Steentjes</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">&euro;3.420</div>
+            <div class="stat-label">Waarde</div>
+        </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+        <h1>LEGO Collectie</h1>
+        <div class="toolbar-actions">
+            <input type="text" class="search-input" placeholder="Zoek op naam of set nummer...">
+            <select class="filter-select">
+                <option>Alle Thema's</option>
+                <option>Star Wars</option>
+                <option>Technic</option>
+                <option>Creator Expert</option>
+                <option>City</option>
+                <option>Icons</option>
+                <option>Architecture</option>
+            </select>
+            <select class="filter-select">
+                <option>Alle Status</option>
+                <option>Niet gebouwd</option>
+                <option>Bezig</option>
+                <option>Gebouwd</option>
+                <option>Tentoongesteld</option>
+            </select>
+            <a href="#" class="btn btn-primary">+ Set Toevoegen</a>
+        </div>
+    </div>
+
+    <!-- LEGO GRID -->
+    <div class="lego-grid">
+        <div class="lego-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #1a1a3a, #2a2a5a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#4a9eff;">Millennium Falcon</div></div>
+            <span class="badge badge-displayed">Tentoongesteld</span>
+            <span class="badge-sealed" style="color:#22c55e;">Gebouwd</span>
+            <div class="info">
+                <div class="set-number">#75192</div>
+                <div class="title">Millennium Falcon UCS</div>
+                <div class="theme-label">Star Wars &middot; Ultimate Collector Series</div>
+                <div class="meta">
+                    <span class="pieces">7.541 stukjes &middot; 9 figs</span>
+                    <span class="price">&euro;849,99</span>
+                </div>
+                <a href="#" class="instructions-link">&#128196; Bouwhandleiding</a>
+            </div>
+        </div>
+
+        <div class="lego-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #2a1a0a, #4a3020); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#f59e0b;">Technic Bugatti</div></div>
+            <span class="badge badge-built">Gebouwd</span>
+            <div class="info">
+                <div class="set-number">#42183</div>
+                <div class="title">Bugatti Chiron</div>
+                <div class="theme-label">Technic</div>
+                <div class="meta">
+                    <span class="pieces">3.599 stukjes</span>
+                    <span class="price">&euro;379,99</span>
+                </div>
+                <a href="#" class="instructions-link">&#128196; Bouwhandleiding</a>
+            </div>
+        </div>
+
+        <div class="lego-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #0a2a1a, #1a4a3a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#22c55e;">Boomhut</div></div>
+            <span class="badge badge-building">Bezig</span>
+            <div class="info">
+                <div class="set-number">#21318</div>
+                <div class="title">Boomhut</div>
+                <div class="theme-label">Ideas</div>
+                <div class="meta">
+                    <span class="pieces">3.036 stukjes &middot; 4 figs</span>
+                    <span class="price">&euro;249,99</span>
+                </div>
+                <a href="#" class="instructions-link">&#128196; Bouwhandleiding</a>
+            </div>
+        </div>
+
+        <div class="lego-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #2a0a0a, #4a2020); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#ef4444;">Colosseum</div></div>
+            <span class="badge-sealed">Sealed</span>
+            <div class="info">
+                <div class="set-number">#10276</div>
+                <div class="title">Colosseum</div>
+                <div class="theme-label">Icons</div>
+                <div class="meta">
+                    <span class="pieces">9.036 stukjes</span>
+                    <span class="price">&euro;549,99</span>
+                </div>
+                <a href="#" class="instructions-link">&#128196; Bouwhandleiding</a>
+            </div>
+        </div>
+
+        <div class="lego-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #1a1a3a, #2a2a5a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#4a9eff;">AT-AT</div></div>
+            <span class="badge badge-displayed">Tentoongesteld</span>
+            <div class="info">
+                <div class="set-number">#75313</div>
+                <div class="title">AT-AT UCS</div>
+                <div class="theme-label">Star Wars &middot; Ultimate Collector Series</div>
+                <div class="meta">
+                    <span class="pieces">6.785 stukjes &middot; 9 figs</span>
+                    <span class="price">&euro;799,99</span>
+                </div>
+                <a href="#" class="instructions-link">&#128196; Bouwhandleiding</a>
+            </div>
+        </div>
+
+        <div class="lego-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #1a2a1a, #2a4a2a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#86efac;">Bloemenboeket</div></div>
+            <span class="badge badge-built">Gebouwd</span>
+            <div class="info">
+                <div class="set-number">#10280</div>
+                <div class="title">Bloemenboeket</div>
+                <div class="theme-label">Icons &middot; Botanical Collection</div>
+                <div class="meta">
+                    <span class="pieces">756 stukjes</span>
+                    <span class="price">&euro;49,99</span>
+                </div>
+                <a href="#" class="instructions-link">&#128196; Bouwhandleiding</a>
+            </div>
+        </div>
+
+        <div class="lego-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #2a2a0a, #4a4a1a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:0.9rem; color:#eab308;">Eiffel Tower</div></div>
+            <span class="badge-sealed">Sealed</span>
+            <div class="info">
+                <div class="set-number">#10307</div>
+                <div class="title">Eiffeltoren</div>
+                <div class="theme-label">Icons</div>
+                <div class="meta">
+                    <span class="pieces">10.001 stukjes</span>
+                    <span class="price">&euro;629,99</span>
+                </div>
+                <a href="#" class="instructions-link">&#128196; Bouwhandleiding</a>
+            </div>
+        </div>
+
+        <div class="lego-card">
+            <div class="cover"><div style="background: linear-gradient(135deg, #1a0a2a, #3a1a5a); width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#c084fc;">Haunted House</div></div>
+            <span class="badge badge-built">Gebouwd</span>
+            <div class="info">
+                <div class="set-number">#10273</div>
+                <div class="title">Haunted House</div>
+                <div class="theme-label">Creator Expert &middot; Fairground</div>
+                <div class="meta">
+                    <span class="pieces">3.231 stukjes &middot; 10 figs</span>
+                    <span class="price">&euro;259,99</span>
+                </div>
+                <a href="#" class="instructions-link">&#128196; Bouwhandleiding</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

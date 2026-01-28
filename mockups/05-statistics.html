@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistieken - Mockup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; }
+        nav { background: #1a1a2e; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 2px solid #6c63ff; }
+        nav .logo { font-size: 1.4rem; font-weight: 700; color: #6c63ff; }
+        nav .nav-links { display: flex; gap: 1.5rem; }
+        nav .nav-links a { color: #aaa; text-decoration: none; font-size: 0.95rem; padding: 0.4rem 0.8rem; border-radius: 6px; }
+        nav .nav-links a.active { color: #6c63ff; font-weight: 600; background: rgba(108,99,255,0.2); }
+
+        .page-container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+        h1 { font-size: 1.6rem; margin-bottom: 1.5rem; }
+
+        /* SUMMARY CARDS */
+        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .summary-card { background: #1a1a2e; border-radius: 12px; padding: 1.25rem; }
+        .summary-card .sc-label { font-size: 0.75rem; color: #888; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .summary-card .sc-value { font-size: 2rem; font-weight: 700; color: #6c63ff; }
+        .summary-card .sc-sub { font-size: 0.8rem; color: #555; margin-top: 0.25rem; }
+
+        /* CHARTS */
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .chart-box { background: #1a1a2e; border-radius: 12px; padding: 1.5rem; }
+        .chart-box h2 { font-size: 1rem; color: #fff; margin-bottom: 1rem; }
+
+        /* BAR CHART (CSS only mockup) */
+        .bar-chart { display: flex; flex-direction: column; gap: 0.6rem; }
+        .bar-row { display: flex; align-items: center; gap: 0.75rem; }
+        .bar-label { font-size: 0.8rem; color: #aaa; width: 120px; text-align: right; flex-shrink: 0; }
+        .bar-track { flex: 1; height: 24px; background: #0f0f0f; border-radius: 4px; overflow: hidden; position: relative; }
+        .bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 0.7rem; font-weight: 600; color: #fff; }
+        .bar-count { font-size: 0.75rem; color: #888; width: 30px; text-align: right; }
+
+        /* DONUT (CSS only) */
+        .donut-container { display: flex; align-items: center; gap: 2rem; }
+        .donut { width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(#6c63ff 0% 35%, #22c55e 35% 55%, #f59e0b 55% 70%, #ef4444 70% 78%, #555 78% 100%); position: relative; }
+        .donut::after { content: ''; position: absolute; top: 30px; left: 30px; right: 30px; bottom: 30px; background: #1a1a2e; border-radius: 50%; }
+        .donut-legend { display: flex; flex-direction: column; gap: 0.5rem; }
+        .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        /* TOP LISTS */
+        .top-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .top-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #2a2a3e; }
+        .top-item .name { font-size: 0.85rem; color: #fff; }
+        .top-item .value { font-size: 0.85rem; color: #6c63ff; font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .charts-grid { grid-template-columns: 1fr; }
+            .summary-cards { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">GameVault</div>
+        <div class="nav-links">
+            <a href="01-homepage-collection.html">Collectie</a>
+            <a href="02-wishlist.html">Wishlist</a>
+            <a href="#" class="active">Statistieken</a>
+            <a href="06-admin-panel.html">Admin</a>
+            <button class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <h1>Statistieken</h1>
+
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="sc-label">Totaal Games</div>
+                <div class="sc-value">127</div>
+                <div class="sc-sub">98 fysiek &middot; 29 digitaal</div>
+            </div>
+            <div class="summary-card">
+                <div class="sc-label">Totale Waarde</div>
+                <div class="sc-value">&euro;2.340</div>
+                <div class="sc-sub">Gem. &euro;18,43 per game</div>
+            </div>
+            <div class="summary-card">
+                <div class="sc-label">Platforms</div>
+                <div class="sc-value">8</div>
+                <div class="sc-sub">Meeste: PS5 (34 games)</div>
+            </div>
+            <div class="summary-card">
+                <div class="sc-label">Uitgespeeld</div>
+                <div class="sc-value">23</div>
+                <div class="sc-sub">18% van collectie</div>
+            </div>
+            <div class="summary-card">
+                <div class="sc-label">Wishlist</div>
+                <div class="sc-value">12</div>
+                <div class="sc-sub">Geschatte waarde: &euro;580</div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <!-- GAMES PER PLATFORM -->
+            <div class="chart-box">
+                <h2>Games per Platform</h2>
+                <div class="bar-chart">
+                    <div class="bar-row">
+                        <span class="bar-label">PlayStation 5</span>
+                        <div class="bar-track"><div class="bar-fill" style="width:85%; background:#6c63ff;">34</div></div>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">Nintendo Switch</span>
+                        <div class="bar-track"><div class="bar-fill" style="width:65%; background:#22c55e;">26</div></div>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">PC / Steam</span>
+                        <div class="bar-track"><div class="bar-fill" style="width:55%; background:#3b82f6;">22</div></div>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">Xbox Series X</span>
+                        <div class="bar-track"><div class="bar-fill" style="width:45%; background:#22c55e;">18</div></div>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">PlayStation 4</span>
+                        <div class="bar-track"><div class="bar-fill" style="width:35%; background:#a78bfa;">14</div></div>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">Xbox 360</span>
+                        <div class="bar-track"><div class="bar-fill" style="width:20%; background:#f59e0b;">8</div></div>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">SNES</span>
+                        <div class="bar-track"><div class="bar-fill" style="width:8%; background:#ef4444;">3</div></div>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">Game Boy</span>
+                        <div class="bar-track"><div class="bar-fill" style="width:5%; background:#888;">2</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATUS VERDELING -->
+            <div class="chart-box">
+                <h2>Speelstatus Verdeling</h2>
+                <div class="donut-container">
+                    <div class="donut"></div>
+                    <div class="donut-legend">
+                        <div class="legend-item"><span class="legend-dot" style="background:#6c63ff;"></span> Niet gespeeld (45)</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#22c55e;"></span> Bezig (25)</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> Uitgespeeld (19)</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> Platinum (10)</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#555;"></span> Onbekend (28)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOP GENRES -->
+            <div class="chart-box">
+                <h2>Top Genres</h2>
+                <div class="top-list">
+                    <div class="top-item"><span class="name">Action-Adventure</span><span class="value">32</span></div>
+                    <div class="top-item"><span class="name">RPG</span><span class="value">24</span></div>
+                    <div class="top-item"><span class="name">First-Person Shooter</span><span class="value">18</span></div>
+                    <div class="top-item"><span class="name">Platformer</span><span class="value">15</span></div>
+                    <div class="top-item"><span class="name">Racing</span><span class="value">12</span></div>
+                    <div class="top-item"><span class="name">Strategy</span><span class="value">8</span></div>
+                </div>
+            </div>
+
+            <!-- DUURSTE GAMES -->
+            <div class="chart-box">
+                <h2>Duurste Games</h2>
+                <div class="top-list">
+                    <div class="top-item"><span class="name">Zelda: TotK (Switch)</span><span class="value">&euro;69,99</span></div>
+                    <div class="top-item"><span class="name">God of War Ragnarok (PS5)</span><span class="value">&euro;69,99</span></div>
+                    <div class="top-item"><span class="name">Elden Ring (PS5)</span><span class="value">&euro;59,99</span></div>
+                    <div class="top-item"><span class="name">Halo Infinite (Xbox)</span><span class="value">&euro;59,99</span></div>
+                    <div class="top-item"><span class="name">Spider-Man 2 (PS5)</span><span class="value">&euro;59,99</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

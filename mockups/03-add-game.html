@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Toevoegen - Mockup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; }
+        nav { background: #1a1a2e; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 2px solid #6c63ff; }
+        nav .logo { font-size: 1.4rem; font-weight: 700; color: #6c63ff; }
+        nav .nav-links { display: flex; gap: 1.5rem; }
+        nav .nav-links a { color: #aaa; text-decoration: none; font-size: 0.95rem; padding: 0.4rem 0.8rem; border-radius: 6px; }
+
+        .page-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        h1 { font-size: 1.6rem; margin-bottom: 1.5rem; }
+
+        /* SEARCH BOX */
+        .api-search { background: #1a1a2e; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .api-search label { font-size: 0.85rem; color: #888; margin-bottom: 0.5rem; display: block; }
+        .api-search .search-row { display: flex; gap: 0.75rem; }
+        .api-search input { flex: 1; background: #0f0f0f; border: 1px solid #333; color: #fff; padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.95rem; }
+        .api-search .btn-search { background: #6c63ff; color: #fff; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .api-search .btn-scan { background: #333; color: #fff; border: none; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+
+        /* SEARCH RESULTS */
+        .search-results { margin-top: 1rem; }
+        .search-results-title { font-size: 0.8rem; color: #888; margin-bottom: 0.75rem; }
+        .result-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.75rem; }
+        .result-card { background: #0f0f0f; border: 2px solid #333; border-radius: 8px; padding: 0.5rem; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .result-card:hover { border-color: #6c63ff; }
+        .result-card.selected { border-color: #6c63ff; background: rgba(108,99,255,0.1); }
+        .result-card .rc-cover { width: 100%; aspect-ratio: 3/4; background: #2a2a3e; border-radius: 4px; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666; }
+        .result-card .rc-name { font-size: 0.75rem; font-weight: 600; color: #fff; }
+        .result-card .rc-year { font-size: 0.65rem; color: #888; }
+        .result-card .rc-source { font-size: 0.6rem; color: #6c63ff; margin-top: 0.25rem; }
+
+        /* FORM */
+        .form-section { background: #1a1a2e; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+        .form-section h2 { font-size: 1.1rem; margin-bottom: 1rem; color: #fff; border-bottom: 1px solid #2a2a3e; padding-bottom: 0.5rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-group label { font-size: 0.8rem; color: #888; }
+        .form-group input, .form-group select, .form-group textarea { background: #0f0f0f; border: 1px solid #333; color: #fff; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.9rem; font-family: inherit; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+
+        .form-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem; }
+        .btn { padding: 0.6rem 1.5rem; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; }
+        .btn-primary { background: #6c63ff; color: #fff; }
+        .btn-secondary { background: #333; color: #fff; }
+        .btn-wishlist { background: transparent; border: 1px solid #f59e0b; color: #f59e0b; }
+
+        .tag-input { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; background: #0f0f0f; border: 1px solid #333; border-radius: 6px; padding: 0.4rem; }
+        .tag { background: #6c63ff; color: #fff; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; display: flex; align-items: center; gap: 0.3rem; }
+        .tag .remove { cursor: pointer; opacity: 0.7; }
+        .tag-input input { border: none; background: transparent; color: #fff; flex: 1; min-width: 100px; padding: 0.3rem; font-size: 0.85rem; outline: none; }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .result-cards { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        }
+    </style>
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">GameVault</div>
+        <div class="nav-links">
+            <a href="01-homepage-collection.html">Collectie</a>
+            <a href="02-wishlist.html">Wishlist</a>
+            <a href="05-statistics.html">Statistieken</a>
+            <a href="06-admin-panel.html">Admin</a>
+            <button class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <h1>Game Toevoegen</h1>
+
+        <!-- API ZOEKEN -->
+        <div class="api-search">
+            <label>Zoek game via API (auto-fill naam, cover, info)</label>
+            <div class="search-row">
+                <input type="text" placeholder="Typ een game naam... bijv. 'Halo Infinite'" value="Halo">
+                <button class="btn-search">Zoeken</button>
+                <button class="btn-scan" title="Barcode scannen">&#128247; Scan</button>
+            </div>
+
+            <!-- ZOEKRESULTATEN -->
+            <div class="search-results">
+                <div class="search-results-title">3 resultaten gevonden via RAWG</div>
+                <div class="result-cards">
+                    <div class="result-card selected">
+                        <div class="rc-cover" style="background: linear-gradient(135deg, #1a3a5c, #0d1b2a); color: #4a9eff;">Halo Infinite</div>
+                        <div class="rc-name">Halo Infinite</div>
+                        <div class="rc-year">2021</div>
+                        <div class="rc-source">via RAWG</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="rc-cover" style="background: linear-gradient(135deg, #1a3a5c, #0d1b2a); color: #4a9eff;">Halo MCC</div>
+                        <div class="rc-name">Halo: MCC</div>
+                        <div class="rc-year">2019</div>
+                        <div class="rc-source">via RAWG</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="rc-cover" style="background: linear-gradient(135deg, #1a3a5c, #0d1b2a); color: #4a9eff;">Halo Reach</div>
+                        <div class="rc-name">Halo: Reach</div>
+                        <div class="rc-year">2010</div>
+                        <div class="rc-source">via RAWG</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAME INFO (auto-filled) -->
+        <div class="form-section">
+            <h2>Game Informatie</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Game Naam *</label>
+                    <input type="text" value="Halo Infinite">
+                </div>
+                <div class="form-group">
+                    <label>Platform *</label>
+                    <select>
+                        <option>Xbox Series X</option>
+                        <option>Xbox One</option>
+                        <option>PC / Steam</option>
+                        <option>PlayStation 5</option>
+                        <option>Nintendo Switch</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Genre</label>
+                    <input type="text" value="First-Person Shooter">
+                </div>
+                <div class="form-group">
+                    <label>Release Datum</label>
+                    <input type="date" value="2021-12-08">
+                </div>
+                <div class="form-group">
+                    <label>Ontwikkelaar</label>
+                    <input type="text" value="343 Industries">
+                </div>
+                <div class="form-group">
+                    <label>Uitgever</label>
+                    <input type="text" value="Xbox Game Studios">
+                </div>
+                <div class="form-group full">
+                    <label>Beschrijving</label>
+                    <textarea>When all hope is lost and humanity's fate hangs in the balance, the Master Chief is ready to confront the most ruthless foe he's ever faced.</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLLECTIE DETAILS -->
+        <div class="form-section">
+            <h2>Collectie Details</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Format</label>
+                    <select>
+                        <option>Fysiek</option>
+                        <option>Digitaal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Conditie</label>
+                    <select>
+                        <option>Nieuw (sealed)</option>
+                        <option>Zo goed als nieuw</option>
+                        <option>Goed</option>
+                        <option>Redelijk</option>
+                        <option>Matig</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Aankoopprijs (&euro;)</label>
+                    <input type="number" step="0.01" placeholder="49.99">
+                </div>
+                <div class="form-group">
+                    <label>Aankoopdatum</label>
+                    <input type="date">
+                </div>
+                <div class="form-group">
+                    <label>Speelstatus</label>
+                    <select>
+                        <option>Niet gespeeld</option>
+                        <option>Bezig</option>
+                        <option>Uitgespeeld</option>
+                        <option>Platinum / 100%</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Rating (1-10)</label>
+                    <input type="number" min="1" max="10" placeholder="8">
+                </div>
+                <div class="form-group">
+                    <label>Barcode / EAN</label>
+                    <input type="text" placeholder="8712345678901">
+                </div>
+                <div class="form-group">
+                    <label>Tags</label>
+                    <div class="tag-input">
+                        <span class="tag">FPS <span class="remove">&times;</span></span>
+                        <span class="tag">Multiplayer <span class="remove">&times;</span></span>
+                        <input type="text" placeholder="Tag toevoegen...">
+                    </div>
+                </div>
+                <div class="form-group full">
+                    <label>Notities</label>
+                    <textarea placeholder="Persoonlijke notities over deze game..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIES -->
+        <div class="form-actions">
+            <button class="btn btn-secondary">Annuleren</button>
+            <button class="btn btn-wishlist">&#9825; Opslaan als Wishlist</button>
+            <button class="btn btn-primary">&#10003; Opslaan in Collectie</button>
+        </div>
+    </div>
+</body>
+</html>

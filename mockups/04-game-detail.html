@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Detail - Mockup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; }
+        nav { background: #1a1a2e; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 2px solid #6c63ff; }
+        nav .logo { font-size: 1.4rem; font-weight: 700; color: #6c63ff; }
+        nav .nav-links { display: flex; gap: 1.5rem; }
+        nav .nav-links a { color: #aaa; text-decoration: none; font-size: 0.95rem; padding: 0.4rem 0.8rem; border-radius: 6px; }
+
+        .detail-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .back-link { color: #6c63ff; text-decoration: none; font-size: 0.85rem; display: inline-block; margin-bottom: 1rem; }
+
+        .detail-header { display: flex; gap: 2rem; margin-bottom: 2rem; }
+        .detail-cover { width: 250px; aspect-ratio: 3/4; background: linear-gradient(135deg, #1a3a5c, #0d1b2a); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #4a9eff; flex-shrink: 0; }
+        .detail-info { flex: 1; }
+        .detail-info h1 { font-size: 2rem; margin-bottom: 0.25rem; }
+        .detail-info .platform-badge { display: inline-block; background: #6c63ff; color: #fff; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem; }
+        .detail-info .format-badge { display: inline-block; background: #333; color: #ccc; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.8rem; margin-left: 0.5rem; }
+
+        .detail-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .meta-item { display: flex; flex-direction: column; }
+        .meta-item .meta-label { font-size: 0.7rem; color: #666; text-transform: uppercase; }
+        .meta-item .meta-value { font-size: 0.95rem; color: #fff; }
+
+        .detail-rating { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+        .detail-rating .stars { color: #f5c518; font-size: 1.3rem; }
+        .detail-rating .score { font-size: 1.1rem; color: #fff; font-weight: 600; }
+
+        .status-badge { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; }
+        .status-playing { background: #22c55e; color: #000; }
+
+        .detail-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .btn { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        .btn-primary { background: #6c63ff; color: #fff; }
+        .btn-danger { background: transparent; border: 1px solid #ef4444; color: #ef4444; }
+        .btn-outline { background: transparent; border: 1px solid #444; color: #aaa; }
+
+        .section { background: #1a1a2e; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+        .section h2 { font-size: 1rem; color: #888; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; }
+        .section p { line-height: 1.6; color: #ccc; }
+
+        .tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .tag { background: rgba(108,99,255,0.2); color: #6c63ff; padding: 0.25rem 0.7rem; border-radius: 4px; font-size: 0.8rem; }
+
+        .other-platforms { margin-top: 1rem; }
+        .other-platforms h3 { font-size: 0.85rem; color: #888; margin-bottom: 0.5rem; }
+        .platform-link { display: inline-block; background: #2a2a3e; color: #fff; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; margin-right: 0.5rem; text-decoration: none; transition: background 0.2s; }
+        .platform-link:hover { background: #6c63ff; }
+
+        .gallery { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 0.5rem; }
+        .gallery-item { width: 200px; height: 120px; background: #2a2a3e; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #555; font-size: 0.75rem; }
+
+        @media (max-width: 768px) {
+            .detail-header { flex-direction: column; align-items: center; text-align: center; }
+            .detail-meta { grid-template-columns: 1fr; }
+        }
+    </style>
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">GameVault</div>
+        <div class="nav-links">
+            <a href="01-homepage-collection.html">Collectie</a>
+            <a href="02-wishlist.html">Wishlist</a>
+            <a href="05-statistics.html">Statistieken</a>
+            <a href="06-admin-panel.html">Admin</a>
+            <button class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+
+    <div class="detail-container">
+        <a href="01-homepage-collection.html" class="back-link">&larr; Terug naar collectie</a>
+
+        <div class="detail-header">
+            <div class="detail-cover">Halo Infinite</div>
+            <div class="detail-info">
+                <h1>Halo Infinite</h1>
+                <span class="platform-badge">Xbox Series X</span>
+                <span class="format-badge">Fysiek</span>
+                <span class="status-badge status-playing" style="margin-left:0.5rem;">Bezig</span>
+
+                <div class="detail-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Ontwikkelaar</span>
+                        <span class="meta-value">343 Industries</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Uitgever</span>
+                        <span class="meta-value">Xbox Game Studios</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Release</span>
+                        <span class="meta-value">8 december 2021</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Genre</span>
+                        <span class="meta-value">First-Person Shooter</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Aankoopprijs</span>
+                        <span class="meta-value">&euro;59,99</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Conditie</span>
+                        <span class="meta-value">Nieuw (sealed)</span>
+                    </div>
+                </div>
+
+                <div class="detail-rating">
+                    <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;&#9734;&#9734;</span>
+                    <span class="score">8 / 10</span>
+                </div>
+
+                <div class="tags">
+                    <span class="tag">FPS</span>
+                    <span class="tag">Multiplayer</span>
+                    <span class="tag">Sci-Fi</span>
+                </div>
+
+                <div class="other-platforms">
+                    <h3>Ook in je collectie op:</h3>
+                    <a href="#" class="platform-link">PC / Steam</a>
+                </div>
+
+                <div class="detail-actions">
+                    <button class="btn btn-primary">Bewerken</button>
+                    <button class="btn btn-outline">Naar Wishlist</button>
+                    <button class="btn btn-danger">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Beschrijving</h2>
+            <p>When all hope is lost and humanity's fate hangs in the balance, the Master Chief is ready to confront the most ruthless foe he's ever faced. Step inside the armor of humanity's greatest hero to experience an epic adventure and explore the massive scale of the Halo ring.</p>
+        </div>
+
+        <div class="section">
+            <h2>Afbeeldingen</h2>
+            <div class="gallery">
+                <div class="gallery-item">Screenshot 1</div>
+                <div class="gallery-item">Screenshot 2</div>
+                <div class="gallery-item">Foto van doos</div>
+                <div class="gallery-item">+ Toevoegen</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Notities</h2>
+            <p>Gekocht bij de launch. Campaign is geweldig, multiplayer speelt lekker. Nog bezig met de campaign op Legendary.</p>
+        </div>
+    </div>
+</body>
+</html>

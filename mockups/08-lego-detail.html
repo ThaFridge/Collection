@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGO Set Detail - Mockup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; }
+        nav { background: #1a1a2e; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 2px solid #6c63ff; }
+        nav .logo { font-size: 1.4rem; font-weight: 700; color: #6c63ff; }
+        nav .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        nav .nav-links a { color: #aaa; text-decoration: none; font-size: 0.95rem; padding: 0.4rem 0.8rem; border-radius: 6px; }
+
+        .detail-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .back-link { color: #f59e0b; text-decoration: none; font-size: 0.85rem; display: inline-block; margin-bottom: 1rem; }
+
+        .detail-header { display: flex; gap: 2rem; margin-bottom: 2rem; }
+        .detail-cover { width: 300px; aspect-ratio: 4/3; background: linear-gradient(135deg, #1a1a3a, #2a2a5a); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #4a9eff; flex-shrink: 0; border: 1px solid #2a2a3e; }
+        .detail-info { flex: 1; }
+        .detail-info .set-number { font-size: 1rem; color: #f59e0b; font-weight: 700; margin-bottom: 0.25rem; }
+        .detail-info h1 { font-size: 2rem; margin-bottom: 0.5rem; color: #fff; }
+        .theme-badge { display: inline-block; background: #f59e0b; color: #000; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; margin-right: 0.5rem; }
+        .subtheme-badge { display: inline-block; background: #333; color: #ccc; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.8rem; }
+
+        .build-status { margin: 1rem 0; }
+        .build-status-label { font-size: 0.75rem; color: #888; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .build-steps { display: flex; gap: 0; align-items: center; }
+        .build-step { display: flex; flex-direction: column; align-items: center; position: relative; }
+        .build-step .step-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; border: 2px solid #333; color: #555; background: #0f0f0f; z-index: 1; }
+        .build-step .step-dot.done { background: #22c55e; border-color: #22c55e; color: #000; }
+        .build-step .step-dot.current { background: #f59e0b; border-color: #f59e0b; color: #000; }
+        .build-step .step-label { font-size: 0.6rem; color: #888; margin-top: 0.3rem; text-align: center; width: 70px; }
+        .build-step .step-label.done { color: #22c55e; }
+        .build-step .step-label.current { color: #f59e0b; }
+        .build-line { width: 40px; height: 2px; background: #333; margin-bottom: 1.2rem; }
+        .build-line.done { background: #22c55e; }
+
+        .detail-meta { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin: 1.5rem 0; }
+        .meta-item { display: flex; flex-direction: column; }
+        .meta-item .meta-label { font-size: 0.7rem; color: #666; text-transform: uppercase; }
+        .meta-item .meta-value { font-size: 0.95rem; color: #fff; }
+
+        .detail-actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+        .btn { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; }
+        .btn-lego { background: #f59e0b; color: #000; }
+        .btn-lego:hover { background: #d97706; }
+        .btn-primary { background: #6c63ff; color: #fff; }
+        .btn-danger { background: transparent; border: 1px solid #ef4444; color: #ef4444; }
+        .btn-outline { background: transparent; border: 1px solid #444; color: #aaa; }
+        .btn-instructions { background: #22c55e; color: #000; }
+
+        .section { background: #1a1a2e; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+        .section h2 { font-size: 0.8rem; color: #888; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .section p { line-height: 1.6; color: #ccc; }
+
+        .tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .tag { background: rgba(245,158,11,0.2); color: #f59e0b; padding: 0.25rem 0.7rem; border-radius: 4px; font-size: 0.8rem; }
+
+        .gallery { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 0.5rem; }
+        .gallery-item { width: 200px; height: 150px; background: #2a2a3e; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #555; font-size: 0.75rem; }
+
+        .links-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .link-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #0f0f0f; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+        .link-item:hover { background: #2a2a3e; }
+        .link-icon { font-size: 1.5rem; width: 40px; text-align: center; }
+        .link-info .link-title { font-size: 0.9rem; color: #fff; font-weight: 600; }
+        .link-info .link-desc { font-size: 0.75rem; color: #888; }
+
+        @media (max-width: 768px) {
+            .detail-header { flex-direction: column; align-items: center; text-align: center; }
+            .detail-meta { grid-template-columns: 1fr 1fr; }
+            .build-steps { flex-wrap: wrap; justify-content: center; }
+        }
+    </style>
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">GameVault</div>
+        <div class="nav-links">
+            <a href="01-homepage-collection.html">Collectie</a>
+            <a href="02-wishlist.html">Wishlist</a>
+            <a href="05-statistics.html">Statistieken</a>
+            <a href="06-admin-panel.html">Admin</a>
+            <button class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+
+    <div class="detail-container">
+        <a href="07-lego-collection.html" class="back-link">&larr; Terug naar LEGO collectie</a>
+
+        <div class="detail-header">
+            <div class="detail-cover">Millennium Falcon</div>
+            <div class="detail-info">
+                <div class="set-number">#75192</div>
+                <h1>Millennium Falcon</h1>
+                <span class="theme-badge">Star Wars</span>
+                <span class="subtheme-badge">Ultimate Collector Series</span>
+
+                <!-- BOUWSTATUS TRACKER -->
+                <div class="build-status">
+                    <div class="build-status-label">Bouwstatus</div>
+                    <div class="build-steps">
+                        <div class="build-step">
+                            <div class="step-dot done">&#10003;</div>
+                            <div class="step-label done">Sealed</div>
+                        </div>
+                        <div class="build-line done"></div>
+                        <div class="build-step">
+                            <div class="step-dot done">&#10003;</div>
+                            <div class="step-label done">Geopend</div>
+                        </div>
+                        <div class="build-line done"></div>
+                        <div class="build-step">
+                            <div class="step-dot done">&#10003;</div>
+                            <div class="step-label done">Gebouwd</div>
+                        </div>
+                        <div class="build-line done"></div>
+                        <div class="build-step">
+                            <div class="step-dot current">&#9733;</div>
+                            <div class="step-label current">Tentoongesteld</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Stukjes</span>
+                        <span class="meta-value">7.541</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Minifiguren</span>
+                        <span class="meta-value">9</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Release</span>
+                        <span class="meta-value">2017</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Adviesprijs</span>
+                        <span class="meta-value">&euro;849,99</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Aankoopprijs</span>
+                        <span class="meta-value">&euro;749,99</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Conditie</span>
+                        <span class="meta-value">Gebouwd</span>
+                    </div>
+                </div>
+
+                <div class="tags">
+                    <span class="tag">UCS</span>
+                    <span class="tag">Display</span>
+                    <span class="tag">Top Set</span>
+                </div>
+
+                <div class="detail-actions">
+                    <a href="#" class="btn btn-instructions">&#128196; Bouwhandleiding</a>
+                    <button class="btn btn-primary">Bewerken</button>
+                    <button class="btn btn-outline">Naar Wishlist</button>
+                    <button class="btn btn-danger">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- LINKS -->
+        <div class="section">
+            <h2>Links</h2>
+            <div class="links-list">
+                <a href="#" class="link-item">
+                    <div class="link-icon">&#128196;</div>
+                    <div class="link-info">
+                        <div class="link-title">Bouwhandleiding op LEGO.com</div>
+                        <div class="link-desc">lego.com/nl-nl/service/buildinginstructions/75192</div>
+                    </div>
+                </a>
+                <a href="#" class="link-item">
+                    <div class="link-icon">&#128722;</div>
+                    <div class="link-info">
+                        <div class="link-title">BrickLink</div>
+                        <div class="link-desc">Prijzen, onderdelen en reviews op BrickLink</div>
+                    </div>
+                </a>
+                <a href="#" class="link-item">
+                    <div class="link-icon">&#129521;</div>
+                    <div class="link-info">
+                        <div class="link-title">LEGO.com Product Pagina</div>
+                        <div class="link-desc">Officiële productpagina op lego.com</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- AFBEELDINGEN -->
+        <div class="section">
+            <h2>Afbeeldingen</h2>
+            <div class="gallery">
+                <div class="gallery-item">Doos voorkant</div>
+                <div class="gallery-item">Gebouwd - voorkant</div>
+                <div class="gallery-item">Gebouwd - binnenkant</div>
+                <div class="gallery-item">In vitrine</div>
+                <div class="gallery-item">+ Toevoegen</div>
+            </div>
+        </div>
+
+        <!-- NOTITIES -->
+        <div class="section">
+            <h2>Notities</h2>
+            <p>Gekocht met korting tijdens Black Friday 2023. Bouw heeft 3 weekenden geduurd. Staat nu in de woonkamer vitrine op een acryl standaard. Alle zakjes waren genummerd, geen ontbrekende stukjes.</p>
+        </div>
+    </div>
+</body>
+</html>

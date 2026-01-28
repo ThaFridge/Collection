@@ -1,0 +1,159 @@
+/* ===== CSS VARIABLES - THEME SYSTEM ===== */
+:root {
+    /* Dark theme (default) */
+    --bg-body: #0f0f0f;
+    --bg-nav: #1a1a2e;
+    --bg-card: #1a1a2e;
+    --bg-input: #1a1a2e;
+    --bg-input-deep: #0f0f0f;
+    --bg-hover: rgba(108,99,255,0.2);
+    --border-main: #2a2a3e;
+    --border-input: #333;
+    --text-primary: #fff;
+    --text-secondary: #e0e0e0;
+    --text-muted: #888;
+    --text-faint: #555;
+    --accent: #6c63ff;
+    --accent-hover: #5a52d5;
+    --cover-bg: #2a2a3e;
+    --badge-physical-bg: rgba(0,0,0,0.6);
+    --badge-physical-color: #ccc;
+    --shadow-hover: rgba(108,99,255,0.3);
+}
+
+[data-theme="light"] {
+    --bg-body: #f0f2f5;
+    --bg-nav: #ffffff;
+    --bg-card: #ffffff;
+    --bg-input: #ffffff;
+    --bg-input-deep: #f0f2f5;
+    --bg-hover: rgba(108,99,255,0.1);
+    --border-main: #e0e0e0;
+    --border-input: #ccc;
+    --text-primary: #1a1a2e;
+    --text-secondary: #333;
+    --text-muted: #666;
+    --text-faint: #999;
+    --accent: #6c63ff;
+    --accent-hover: #5a52d5;
+    --cover-bg: #e0e0e8;
+    --badge-physical-bg: rgba(0,0,0,0.5);
+    --badge-physical-color: #fff;
+    --shadow-hover: rgba(108,99,255,0.2);
+}
+
+/* ===== THEME TOGGLE BUTTON ===== */
+.theme-toggle {
+    background: var(--bg-input-deep);
+    border: 1px solid var(--border-input);
+    color: var(--text-muted);
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0;
+    line-height: 1;
+}
+.theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ===== GLOBAL OVERRIDES USING VARIABLES ===== */
+body {
+    background: var(--bg-body);
+    color: var(--text-secondary);
+    transition: background 0.3s, color 0.3s;
+}
+
+nav {
+    background: var(--bg-nav) !important;
+    border-bottom-color: var(--accent) !important;
+}
+nav .nav-links a { color: var(--text-muted); }
+nav .nav-links a:hover, nav .nav-links a.active { color: var(--text-primary); background: var(--bg-hover); }
+nav .nav-links a.active { color: var(--accent); }
+
+.stats-bar { background: var(--bg-card); border-bottom-color: var(--border-main); }
+.stat-item .stat-label { color: var(--text-muted); }
+
+.toolbar h1 { color: var(--text-primary); }
+.search-input, .filter-select {
+    background: var(--bg-input) !important;
+    border-color: var(--border-input) !important;
+    color: var(--text-primary) !important;
+}
+.search-input::placeholder { color: var(--text-faint) !important; }
+
+.game-card {
+    background: var(--bg-card) !important;
+}
+.game-card:hover { box-shadow: 0 8px 25px var(--shadow-hover) !important; }
+.game-card .cover { background: var(--cover-bg) !important; }
+.game-card .info .title { color: var(--text-primary) !important; }
+.game-card .info .meta .condition { color: var(--text-muted) !important; }
+
+.badge-physical { background: var(--badge-physical-bg) !important; color: var(--badge-physical-color) !important; }
+
+/* Cards in other pages */
+.section, .form-section, .chart-box, .summary-card, .wishlist-card, .provider-card, .api-search {
+    background: var(--bg-card) !important;
+    border-color: var(--border-main) !important;
+}
+.section h2 { color: var(--text-muted) !important; }
+.form-section h2, .chart-box h2 { color: var(--text-primary) !important; }
+
+.form-group label, .field label { color: var(--text-muted) !important; }
+.form-group input, .form-group select, .form-group textarea,
+.field input, .field select {
+    background: var(--bg-input-deep) !important;
+    border-color: var(--border-input) !important;
+    color: var(--text-primary) !important;
+}
+
+.wishlist-card .details .title { color: var(--text-primary) !important; }
+.wishlist-card .details .price { color: var(--text-muted) !important; }
+
+.detail-info h1 { color: var(--text-primary) !important; }
+.meta-item .meta-label { color: var(--text-faint) !important; }
+.meta-item .meta-value { color: var(--text-primary) !important; }
+.section p { color: var(--text-secondary) !important; }
+.back-link { color: var(--accent) !important; }
+
+.bar-label { color: var(--text-muted) !important; }
+.bar-track { background: var(--bg-input-deep) !important; }
+.top-item { border-bottom-color: var(--border-main) !important; }
+.top-item .name { color: var(--text-primary) !important; }
+
+.db-item .label { color: var(--text-faint) !important; }
+.db-item .value { color: var(--text-primary) !important; }
+
+.provider-card { background: var(--bg-input-deep) !important; border-color: var(--border-main) !important; }
+.provider-header .name { color: var(--text-primary) !important; }
+
+.result-card { background: var(--bg-input-deep) !important; border-color: var(--border-input) !important; }
+.result-card:hover { border-color: var(--accent) !important; }
+.result-card.selected { border-color: var(--accent) !important; background: var(--bg-hover) !important; }
+.result-card .rc-name { color: var(--text-primary) !important; }
+
+.tag-input { background: var(--bg-input-deep) !important; border-color: var(--border-input) !important; }
+.tag-input input { color: var(--text-primary) !important; }
+
+.donut::after { background: var(--bg-card) !important; }
+.sc-label { color: var(--text-muted) !important; }
+.sc-sub { color: var(--text-faint) !important; }
+
+.detail-cover { border: 1px solid var(--border-main); }
+.gallery-item { background: var(--cover-bg) !important; color: var(--text-faint) !important; }
+
+/* Danger zone keeps its styling */
+.danger-zone { background: rgba(239,68,68,0.05) !important; }
+
+/* Platform link */
+.platform-link { background: var(--bg-input-deep) !important; color: var(--text-primary) !important; }
+.platform-link:hover { background: var(--accent) !important; color: #fff !important; }

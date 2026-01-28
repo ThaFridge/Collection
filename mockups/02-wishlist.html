@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist - Mockup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; }
+        nav { background: #1a1a2e; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 2px solid #6c63ff; }
+        nav .logo { font-size: 1.4rem; font-weight: 700; color: #6c63ff; }
+        nav .nav-links { display: flex; gap: 1.5rem; }
+        nav .nav-links a { color: #aaa; text-decoration: none; font-size: 0.95rem; padding: 0.4rem 0.8rem; border-radius: 6px; transition: all 0.2s; }
+        nav .nav-links a:hover, nav .nav-links a.active { color: #fff; background: rgba(108,99,255,0.2); }
+        nav .nav-links a.active { color: #6c63ff; font-weight: 600; }
+
+        .toolbar { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .toolbar h1 { font-size: 1.6rem; color: #fff; }
+        .toolbar-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .btn { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; }
+        .btn-primary { background: #6c63ff; color: #fff; }
+        .search-input { background: #1a1a2e; border: 1px solid #333; color: #fff; padding: 0.5rem 1rem; border-radius: 8px; width: 250px; font-size: 0.9rem; }
+
+        .wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; padding: 0 2rem 2rem; }
+        .wishlist-card { background: #1a1a2e; border-radius: 12px; display: flex; overflow: hidden; transition: transform 0.2s; }
+        .wishlist-card:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(108,99,255,0.2); }
+        .wishlist-card .cover { width: 100px; min-height: 130px; background: #2a2a3e; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.7rem; color: #555; }
+        .wishlist-card .details { padding: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .wishlist-card .details .title { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 0.25rem; }
+        .wishlist-card .details .platform { font-size: 0.8rem; color: #6c63ff; margin-bottom: 0.5rem; }
+        .wishlist-card .details .price { font-size: 0.85rem; color: #888; }
+        .wishlist-card .details .actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+        .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
+        .btn-success { background: #22c55e; color: #000; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-outline { background: transparent; border: 1px solid #444; color: #aaa; }
+
+        @media (max-width: 768px) {
+            .wishlist-grid { grid-template-columns: 1fr; padding: 0 1rem 1rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">GameVault</div>
+        <div class="nav-links">
+            <a href="01-homepage-collection.html">Collectie</a>
+            <a href="#" class="active">Wishlist</a>
+            <a href="05-statistics.html">Statistieken</a>
+            <a href="06-admin-panel.html">Admin</a>
+            <button class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+
+    <div class="toolbar">
+        <h1>Wishlist <span style="color:#888; font-size:1rem; font-weight:400;">(12 games)</span></h1>
+        <div class="toolbar-actions">
+            <input type="text" class="search-input" placeholder="Zoek in wishlist...">
+            <a href="03-add-game.html" class="btn btn-primary">+ Toevoegen</a>
+        </div>
+    </div>
+
+    <div class="wishlist-grid">
+        <div class="wishlist-card">
+            <div class="cover" style="background: linear-gradient(135deg, #1a2a3a, #0d1520); color: #4a9eff; font-size: 0.8rem;">GTA VI</div>
+            <div class="details">
+                <div>
+                    <div class="title">Grand Theft Auto VI</div>
+                    <div class="platform">PlayStation 5</div>
+                    <div class="price">Geschatte prijs: &euro;69,99</div>
+                </div>
+                <div class="actions">
+                    <button class="btn-sm btn-success">&#10003; Naar Collectie</button>
+                    <button class="btn-sm btn-outline">Bewerken</button>
+                    <button class="btn-sm btn-danger">&#10005;</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="wishlist-card">
+            <div class="cover" style="background: linear-gradient(135deg, #2a1a0a, #4a3020); color: #ff9800; font-size: 0.8rem;">Metroid 4</div>
+            <div class="details">
+                <div>
+                    <div class="title">Metroid Prime 4</div>
+                    <div class="platform">Nintendo Switch</div>
+                    <div class="price">Geschatte prijs: &euro;59,99</div>
+                </div>
+                <div class="actions">
+                    <button class="btn-sm btn-success">&#10003; Naar Collectie</button>
+                    <button class="btn-sm btn-outline">Bewerken</button>
+                    <button class="btn-sm btn-danger">&#10005;</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="wishlist-card">
+            <div class="cover" style="background: linear-gradient(135deg, #1a0a2a, #3a1a4a); color: #c084fc; font-size: 0.8rem;">Fable</div>
+            <div class="details">
+                <div>
+                    <div class="title">Fable</div>
+                    <div class="platform">Xbox Series X</div>
+                    <div class="price">Geschatte prijs: &euro;69,99</div>
+                </div>
+                <div class="actions">
+                    <button class="btn-sm btn-success">&#10003; Naar Collectie</button>
+                    <button class="btn-sm btn-outline">Bewerken</button>
+                    <button class="btn-sm btn-danger">&#10005;</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="wishlist-card">
+            <div class="cover" style="background: linear-gradient(135deg, #0a2a1a, #1a4a2a); color: #22c55e; font-size: 0.8rem;">Silksong</div>
+            <div class="details">
+                <div>
+                    <div class="title">Hollow Knight: Silksong</div>
+                    <div class="platform">Nintendo Switch</div>
+                    <div class="price">Geschatte prijs: &euro;29,99</div>
+                </div>
+                <div class="actions">
+                    <button class="btn-sm btn-success">&#10003; Naar Collectie</button>
+                    <button class="btn-sm btn-outline">Bewerken</button>
+                    <button class="btn-sm btn-danger">&#10005;</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="wishlist-card">
+            <div class="cover" style="background: linear-gradient(135deg, #2a2a0a, #4a4a1a); color: #eab308; font-size: 0.8rem;">Death Stranding 2</div>
+            <div class="details">
+                <div>
+                    <div class="title">Death Stranding 2</div>
+                    <div class="platform">PlayStation 5</div>
+                    <div class="price">Geschatte prijs: &euro;69,99</div>
+                </div>
+                <div class="actions">
+                    <button class="btn-sm btn-success">&#10003; Naar Collectie</button>
+                    <button class="btn-sm btn-outline">Bewerken</button>
+                    <button class="btn-sm btn-danger">&#10005;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
