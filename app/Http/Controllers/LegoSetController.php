@@ -26,8 +26,12 @@ class LegoSetController extends Controller
             });
         }
 
-        $sort = $request->get('sort', 'name');
-        $dir = $request->get('dir', 'asc');
+        $sortParam = $request->get('sort', 'name');
+        $sortParts = explode('-', $sortParam, 2);
+        $sort = $sortParts[0];
+        $dir = $sortParts[1] ?? 'asc';
+        $allowed = ['name', 'created_at', 'purchase_price', 'piece_count', 'release_year'];
+        if (!in_array($sort, $allowed)) { $sort = 'name'; $dir = 'asc'; }
         $query->orderBy($sort, $dir);
 
         $sets = $query->paginate(24);
@@ -83,7 +87,8 @@ class LegoSetController extends Controller
     public function show(LegoSet $legoSet)
     {
         $legoSet->load('images', 'tags');
-        return view('lego.show', compact('legoSet'));
+        $allTags = \App\Models\Tag::orderBy('name')->get();
+        return view('lego.show', compact('legoSet', 'allTags'));
     }
 
     public function edit(LegoSet $legoSet)
@@ -152,6 +157,12 @@ class LegoSetController extends Controller
     {
         $sets = LegoSet::wishlist()->orderBy('name')->paginate(24);
         return view('lego.wishlist', compact('sets'));
+    }
+
+    public function checkDuplicate(Request $request)
+    {
+        $exists = LegoSet::where('set_number', $request->set_number)->exists();
+        return response()->json(['exists' => $exists]);
     }
 
     private function downloadImage(string $url): ?string

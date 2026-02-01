@@ -21,9 +21,9 @@
                 {{ $tag->games_count }} games, {{ $tag->lego_sets_count }} LEGO sets
             </span>
         </div>
-        <form method="POST" action="{{ route('tags.destroy', $tag) }}" onsubmit="return confirm('Tag verwijderen?')">
+        <form id="delete-tag-{{ $tag->id }}" method="POST" action="{{ route('tags.destroy', $tag) }}">
             @csrf @method('DELETE')
-            <button type="submit" class="btn btn-danger btn-sm">Verwijder</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(document.getElementById('delete-tag-{{ $tag->id }}'), 'Tag verwijderen?', '{{ $tag->name }} wordt verwijderd van alle items.')">Verwijder</button>
         </form>
     </div>
     @empty

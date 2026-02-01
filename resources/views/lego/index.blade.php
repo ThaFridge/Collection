@@ -39,6 +39,13 @@
                 <option value="built" {{ request('build_status') == 'built' ? 'selected' : '' }}>Gebouwd</option>
                 <option value="displayed" {{ request('build_status') == 'displayed' ? 'selected' : '' }}>Tentoongesteld</option>
             </select>
+            <select name="sort" onchange="this.form.submit()">
+                <option value="name" {{ request('sort', 'name') == 'name' ? 'selected' : '' }}>Naam A-Z</option>
+                <option value="name-desc" {{ request('sort') == 'name-desc' ? 'selected' : '' }}>Naam Z-A</option>
+                <option value="created_at-desc" {{ request('sort') == 'created_at-desc' ? 'selected' : '' }}>Nieuwste eerst</option>
+                <option value="piece_count-desc" {{ request('sort') == 'piece_count-desc' ? 'selected' : '' }}>Meeste steentjes</option>
+                <option value="purchase_price-desc" {{ request('sort') == 'purchase_price-desc' ? 'selected' : '' }}>Prijs hoog-laag</option>
+            </select>
             <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
         </form>
     </div>
@@ -48,7 +55,7 @@
     @forelse($sets as $set)
         <a href="{{ route('lego.show', $set) }}" class="game-card">
             @if($set->image_path)
-                <img src="{{ asset('storage/' . $set->image_path) }}" alt="{{ $set->name }}" class="game-card-cover" style="aspect-ratio:1/1;">
+                <img data-src="{{ asset('storage/' . $set->image_path) }}" alt="{{ $set->name }}" class="game-card-cover" style="aspect-ratio:1/1;" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
             @else
                 <div class="game-card-cover-placeholder" style="aspect-ratio:1/1;">&#129521;</div>
             @endif

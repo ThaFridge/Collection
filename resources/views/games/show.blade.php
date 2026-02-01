@@ -53,11 +53,18 @@
             </div>
         @endif
 
-        @if($game->tags->count())
+        @if($allTags->count())
             <div style="margin-top:0.75rem;">
-                @foreach($game->tags as $tag)
-                    <span class="badge badge-format">{{ $tag->name }}</span>
-                @endforeach
+                <strong style="font-size:0.85rem;">Tags:</strong>
+                <div style="display:flex;gap:0.35rem;flex-wrap:wrap;margin-top:0.35rem;">
+                    @foreach($allTags as $tag)
+                        <form method="POST" action="{{ route('games.toggle-tag', $game) }}" style="display:inline;">
+                            @csrf
+                            <input type="hidden" name="tag_id" value="{{ $tag->id }}">
+                            <button type="submit" class="badge {{ $game->tags->contains($tag->id) ? 'badge-platform' : 'badge-format' }}" style="cursor:pointer;border:none;font-family:inherit;">{{ $tag->name }}</button>
+                        </form>
+                    @endforeach
+                </div>
             </div>
         @endif
 
@@ -69,9 +76,9 @@
                     {{ $game->status === 'collection' ? 'Naar Wishlist' : 'Naar Collectie' }}
                 </button>
             </form>
-            <form method="POST" action="{{ route('games.destroy', $game) }}" style="display:inline;" onsubmit="return confirm('Weet je het zeker?')">
+            <form id="delete-game" method="POST" action="{{ route('games.destroy', $game) }}" style="display:inline;">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn btn-danger">Verwijderen</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete(document.getElementById('delete-game'), 'Game verwijderen?', '{{ $game->name }} wordt permanent verwijderd.')">Verwijderen</button>
             </form>
         </div>
     </div>

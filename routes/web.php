@@ -20,6 +20,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 // API search
 Route::get('/api/games/search', [GameSearchController::class, 'search'])->name('api.games.search');
 Route::get('/api/lego/search', [LegoSearchController::class, 'search'])->name('api.lego.search');
+Route::get('/api/games/check-duplicate', [GameController::class, 'checkDuplicate'])->name('api.games.check-duplicate');
+Route::get('/api/lego/check-duplicate', [LegoSetController::class, 'checkDuplicate'])->name('api.lego.check-duplicate');
 
 // Games
 Route::get('/games/wishlist', [GameController::class, 'wishlist'])->name('games.wishlist');

@@ -75,12 +75,59 @@
             background: var(--bg-input);
             color: var(--accent);
         }
-        .nav-divider {
-            width: 1px;
-            height: 20px;
-            background: var(--border);
-            margin: 0 0.25rem;
+        .nav-dropdown {
+            position: relative;
         }
+        .nav-dropdown-toggle {
+            color: var(--text);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .nav-dropdown-toggle:hover, .nav-dropdown.open .nav-dropdown-toggle {
+            background: var(--bg-input);
+            color: var(--accent);
+        }
+        .nav-dropdown-toggle.active { color: var(--accent); }
+        .nav-dropdown-toggle::after {
+            content: '';
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid currentColor;
+        }
+        .nav-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.35rem 0;
+            min-width: 180px;
+            box-shadow: 0 8px 25px var(--shadow);
+            z-index: 200;
+        }
+        .nav-dropdown.open .nav-dropdown-menu { display: block; }
+        .nav-dropdown-menu a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.15s;
+            border-radius: 0;
+        }
+        .nav-dropdown-menu a:hover { background: var(--bg-input); color: var(--accent); }
+        .nav-dropdown-menu a.active { color: var(--accent); }
         .theme-toggle {
             background: var(--bg-input);
             border: 1px solid var(--border);
@@ -280,6 +327,62 @@
         }
         .pagination li.active span { background: var(--accent); color: #fff; border-color: var(--accent); }
 
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .toast {
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px var(--shadow);
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 3.7s forwards;
+            cursor: pointer;
+            max-width: 400px;
+        }
+        .toast-success { background: var(--bg-card); color: var(--success); border: 1px solid var(--success); }
+        .toast-error { background: var(--bg-card); color: var(--accent); border: 1px solid var(--accent); }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-10px); } }
+
+        /* Confirm modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        .modal-box h3 { margin-bottom: 0.5rem; }
+        .modal-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem; }
+        .modal-actions { display: flex; gap: 0.75rem; justify-content: center; }
+
+        /* Spinner */
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Form validation */
+        .form-control:invalid:not(:placeholder-shown):not(:focus) { border-color: var(--accent); }
+
         @media (max-width: 768px) {
             .game-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
             .form-row { grid-template-columns: 1fr; }
@@ -293,33 +396,65 @@
     <nav class="navbar">
         <a href="/" class="navbar-brand">GameVault</a>
         <ul class="navbar-nav">
-            <li><a href="{{ route('games.index') }}" class="{{ request()->routeIs('games.index') ? 'active' : '' }}">Games</a></li>
-            <li><a href="{{ route('games.wishlist') }}" class="{{ request()->routeIs('games.wishlist') ? 'active' : '' }}">Wishlist</a></li>
-            <li><a href="{{ route('games.create') }}" class="{{ request()->routeIs('games.create') ? 'active' : '' }}">+ Game</a></li>
-            <li><div class="nav-divider"></div></li>
-            <li><a href="{{ route('lego.index') }}" class="{{ request()->routeIs('lego.index') ? 'active' : '' }}">LEGO</a></li>
-            <li><a href="{{ route('lego.wishlist') }}" class="{{ request()->routeIs('lego.wishlist') ? 'active' : '' }}">LEGO Wishlist</a></li>
-            <li><a href="{{ route('lego.create') }}" class="{{ request()->routeIs('lego.create') ? 'active' : '' }}">+ LEGO</a></li>
-            <li><div class="nav-divider"></div></li>
+            <li class="nav-dropdown">
+                <button class="nav-dropdown-toggle {{ request()->routeIs('games.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">Games</button>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ route('games.index') }}" class="{{ request()->routeIs('games.index') ? 'active' : '' }}">Collectie</a>
+                    <a href="{{ route('games.wishlist') }}" class="{{ request()->routeIs('games.wishlist') ? 'active' : '' }}">Wishlist</a>
+                    <a href="{{ route('games.create') }}" class="{{ request()->routeIs('games.create') ? 'active' : '' }}">+ Game toevoegen</a>
+                </div>
+            </li>
+            <li class="nav-dropdown">
+                <button class="nav-dropdown-toggle {{ request()->routeIs('lego.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">LEGO</button>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ route('lego.index') }}" class="{{ request()->routeIs('lego.index') ? 'active' : '' }}">Collectie</a>
+                    <a href="{{ route('lego.wishlist') }}" class="{{ request()->routeIs('lego.wishlist') ? 'active' : '' }}">Wishlist</a>
+                    <a href="{{ route('lego.create') }}" class="{{ request()->routeIs('lego.create') ? 'active' : '' }}">+ Set toevoegen</a>
+                </div>
+            </li>
             <li><a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a></li>
             <li><a href="{{ route('tags.index') }}" class="{{ request()->routeIs('tags.*') ? 'active' : '' }}">Tags</a></li>
-            <li><a href="{{ route('export.index') }}" class="{{ request()->routeIs('export.*') ? 'active' : '' }}">Export</a></li>
             <li><a href="{{ route('admin.index') }}" class="{{ request()->routeIs('admin.*') ? 'active' : '' }}">Admin</a></li>
             <li><button class="theme-toggle" onclick="toggleTheme()">&#127763;</button></li>
         </ul>
     </nav>
 
-    <div class="container">
+    <div class="toast-container" id="toast-container">
         @if(session('success'))
-            <div class="flash flash-success">{{ session('success') }}</div>
+            <div class="toast toast-success" onclick="this.remove()">{{ session('success') }}</div>
         @endif
         @if(session('error'))
-            <div class="flash flash-error">{{ session('error') }}</div>
+            <div class="toast toast-error" onclick="this.remove()">{{ session('error') }}</div>
         @endif
+    </div>
+
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-box">
+            <h3 id="confirm-title">Weet je het zeker?</h3>
+            <p id="confirm-message">Dit kan niet ongedaan worden gemaakt.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeConfirm()">Annuleren</button>
+                <button class="btn btn-danger" id="confirm-btn" onclick="doConfirm()">Verwijderen</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
         @yield('content')
     </div>
 
     <script>
+        function toggleDropdown(btn) {
+            var dd = btn.parentElement;
+            var wasOpen = dd.classList.contains('open');
+            document.querySelectorAll('.nav-dropdown.open').forEach(function(el) { el.classList.remove('open'); });
+            if (!wasOpen) dd.classList.add('open');
+        }
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.nav-dropdown')) {
+                document.querySelectorAll('.nav-dropdown.open').forEach(function(el) { el.classList.remove('open'); });
+            }
+        });
         function toggleTheme() {
             var html = document.documentElement;
             var current = html.getAttribute('data-theme');
@@ -331,6 +466,45 @@
             var saved = localStorage.getItem('theme');
             if (saved) document.documentElement.setAttribute('data-theme', saved);
         })();
+
+        // Auto-remove toasts
+        setTimeout(function() {
+            document.querySelectorAll('.toast').forEach(function(t) { t.remove(); });
+        }, 4000);
+
+        // Confirm modal
+        var confirmForm = null;
+        function confirmDelete(form, title, message) {
+            confirmForm = form;
+            if (title) document.getElementById('confirm-title').textContent = title;
+            if (message) document.getElementById('confirm-message').textContent = message;
+            document.getElementById('confirm-modal').classList.add('open');
+            return false;
+        }
+        function closeConfirm() {
+            document.getElementById('confirm-modal').classList.remove('open');
+            confirmForm = null;
+        }
+        function doConfirm() {
+            if (confirmForm) confirmForm.submit();
+        }
+        document.getElementById('confirm-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeConfirm();
+        });
+
+        // Lazy load images
+        if ('IntersectionObserver' in window) {
+            var imgObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        var img = entry.target;
+                        if (img.dataset.src) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
+                        imgObserver.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '200px' });
+            document.querySelectorAll('img[data-src]').forEach(function(img) { imgObserver.observe(img); });
+        }
     </script>
     @stack('scripts')
 </body>

@@ -27,8 +27,12 @@ class GameController extends Controller
             $query->where('name', 'like', '%' . $request->q . '%');
         }
 
-        $sort = $request->get('sort', 'name');
-        $dir = $request->get('dir', 'asc');
+        $sortParam = $request->get('sort', 'name');
+        $sortParts = explode('-', $sortParam, 2);
+        $sort = $sortParts[0];
+        $dir = $sortParts[1] ?? 'asc';
+        $allowed = ['name', 'created_at', 'purchase_price', 'release_date'];
+        if (!in_array($sort, $allowed)) { $sort = 'name'; $dir = 'asc'; }
         $query->orderBy($sort, $dir);
 
         $games = $query->paginate(24);
@@ -70,8 +74,9 @@ class GameController extends Controller
         $otherPlatforms = Game::where('name', $game->name)
             ->where('id', '!=', $game->id)
             ->get();
+        $allTags = \App\Models\Tag::orderBy('name')->get();
 
-        return view('games.show', compact('game', 'otherPlatforms'));
+        return view('games.show', compact('game', 'otherPlatforms', 'allTags'));
     }
 
     public function edit(Game $game)
@@ -114,6 +119,15 @@ class GameController extends Controller
     {
         $games = Game::wishlist()->orderBy('name')->paginate(24);
         return view('games.wishlist', compact('games'));
+    }
+
+    public function checkDuplicate(Request $request)
+    {
+        $exists = Game::where('name', $request->name)
+            ->where('platform', $request->platform)
+            ->where('format', $request->format)
+            ->exists();
+        return response()->json(['exists' => $exists]);
     }
 
     private function downloadCover(string $url): ?string

@@ -39,6 +39,13 @@
                 <option value="completed" {{ request('completion_status') == 'completed' ? 'selected' : '' }}>Uitgespeeld</option>
                 <option value="platinum" {{ request('completion_status') == 'platinum' ? 'selected' : '' }}>Platinum</option>
             </select>
+            <select name="sort" onchange="this.form.submit()">
+                <option value="name" {{ request('sort', 'name') == 'name' ? 'selected' : '' }}>Naam A-Z</option>
+                <option value="name-desc" {{ request('sort') == 'name-desc' ? 'selected' : '' }}>Naam Z-A</option>
+                <option value="created_at-desc" {{ request('sort') == 'created_at-desc' ? 'selected' : '' }}>Nieuwste eerst</option>
+                <option value="purchase_price-desc" {{ request('sort') == 'purchase_price-desc' ? 'selected' : '' }}>Prijs hoog-laag</option>
+                <option value="release_date-desc" {{ request('sort') == 'release_date-desc' ? 'selected' : '' }}>Release nieuwst</option>
+            </select>
             <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
         </form>
     </div>
@@ -48,7 +55,7 @@
     @forelse($games as $game)
         <a href="{{ route('games.show', $game) }}" class="game-card">
             @if($game->cover_image_path)
-                <img src="{{ asset('storage/' . $game->cover_image_path) }}" alt="{{ $game->name }}" class="game-card-cover">
+                <img data-src="{{ asset('storage/' . $game->cover_image_path) }}" alt="{{ $game->name }}" class="game-card-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
             @else
                 <div class="game-card-cover-placeholder">🎮</div>
             @endif

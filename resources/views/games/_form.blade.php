@@ -113,5 +113,40 @@
     <textarea name="notes" class="form-control">{{ old('notes', $game->notes ?? '') }}</textarea>
 </div>
 
+<div id="duplicate-warning" style="display:none;padding:0.75rem 1rem;border-radius:8px;background:rgba(243,156,18,0.15);color:var(--warning);border:1px solid var(--warning);margin-bottom:1rem;font-size:0.9rem;">
+    Deze game bestaat al in je collectie met hetzelfde platform en format.
+</div>
+
 <input type="hidden" name="external_api_id" value="{{ old('external_api_id', $game->external_api_id ?? '') }}" id="external_api_id">
 <input type="hidden" name="external_api_source" value="{{ old('external_api_source', $game->external_api_source ?? '') }}" id="external_api_source">
+
+@push('scripts')
+<script>
+(function() {
+    var nameEl = document.querySelector('[name="name"]');
+    var platformEl = document.querySelector('[name="platform"]');
+    var formatEl = document.querySelector('[name="format"]');
+    var warning = document.getElementById('duplicate-warning');
+    var checkTimer;
+
+    function checkDuplicate() {
+        clearTimeout(checkTimer);
+        var name = nameEl ? nameEl.value : '';
+        var platform = platformEl ? platformEl.value : '';
+        var format = formatEl ? formatEl.value : '';
+        if (!name || !platform) { warning.style.display = 'none'; return; }
+
+        checkTimer = setTimeout(function() {
+            fetch('/api/games/check-duplicate?name=' + encodeURIComponent(name) + '&platform=' + encodeURIComponent(platform) + '&format=' + encodeURIComponent(format))
+                .then(function(r) { return r.json(); })
+                .then(function(d) { warning.style.display = d.exists ? 'block' : 'none'; })
+                .catch(function() {});
+        }, 500);
+    }
+
+    if (nameEl) nameEl.addEventListener('change', checkDuplicate);
+    if (platformEl) platformEl.addEventListener('change', checkDuplicate);
+    if (formatEl) formatEl.addEventListener('change', checkDuplicate);
+})();
+</script>
+@endpush

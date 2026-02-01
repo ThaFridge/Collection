@@ -63,6 +63,21 @@
             @endif
         </div>
 
+        @if($allTags->count())
+            <div style="margin-top:0.75rem;">
+                <strong style="font-size:0.85rem;">Tags:</strong>
+                <div style="display:flex;gap:0.35rem;flex-wrap:wrap;margin-top:0.35rem;">
+                    @foreach($allTags as $tag)
+                        <form method="POST" action="{{ route('lego.toggle-tag', $legoSet) }}" style="display:inline;">
+                            @csrf
+                            <input type="hidden" name="tag_id" value="{{ $tag->id }}">
+                            <button type="submit" class="badge {{ $legoSet->tags->contains($tag->id) ? 'badge-platform' : 'badge-format' }}" style="cursor:pointer;border:none;font-family:inherit;">{{ $tag->name }}</button>
+                        </form>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         <div class="detail-actions">
             <a href="{{ route('lego.edit', $legoSet) }}" class="btn btn-secondary">Bewerken</a>
             <form method="POST" action="{{ route('lego.toggle-status', $legoSet) }}" style="display:inline;">
@@ -71,9 +86,9 @@
                     {{ $legoSet->status === 'collection' ? 'Naar Wishlist' : 'Naar Collectie' }}
                 </button>
             </form>
-            <form method="POST" action="{{ route('lego.destroy', $legoSet) }}" style="display:inline;" onsubmit="return confirm('Weet je het zeker?')">
+            <form id="delete-lego" method="POST" action="{{ route('lego.destroy', $legoSet) }}" style="display:inline;">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn btn-danger">Verwijderen</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete(document.getElementById('delete-lego'), 'LEGO set verwijderen?', '{{ $legoSet->name }} wordt permanent verwijderd.')">Verwijderen</button>
             </form>
         </div>
     </div>

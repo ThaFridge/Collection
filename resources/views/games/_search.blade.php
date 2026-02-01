@@ -1,6 +1,9 @@
 <div class="form-group" style="position:relative;">
     <label class="form-label">Zoek game via API</label>
-    <input type="text" id="api-search" class="form-control" placeholder="Zoek op naam...">
+    <div style="position:relative;">
+        <input type="text" id="api-search" class="form-control" placeholder="Zoek op naam...">
+        <span id="search-spinner" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);"><span class="spinner"></span></span>
+    </div>
     <div id="search-results" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--bg-card);border:1px solid var(--border);border-radius:0 0 8px 8px;max-height:400px;overflow-y:auto;"></div>
 </div>
 
@@ -17,10 +20,12 @@
         if (q.length < 2) { resultsDiv.style.display = 'none'; return; }
 
         debounceTimer = setTimeout(function() {
+            document.getElementById('search-spinner').style.display = 'inline';
             var platform = document.getElementById('game-platform') ? document.getElementById('game-platform').value : '';
             fetch('/api/games/search?q=' + encodeURIComponent(q) + '&platform=' + encodeURIComponent(platform))
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
+                    document.getElementById('search-spinner').style.display = 'none';
                     if (!data.length) {
                         resultsDiv.innerHTML = '<div style="padding:1rem;color:var(--text-muted);">Geen resultaten gevonden</div>';
                         resultsDiv.style.display = 'block';
@@ -49,7 +54,7 @@
                     });
                     resultsDiv.style.display = 'block';
                 })
-                .catch(function(e) { console.error('Search error:', e); });
+                .catch(function(e) { document.getElementById('search-spinner').style.display = 'none'; console.error('Search error:', e); });
         }, 300);
     });
 
