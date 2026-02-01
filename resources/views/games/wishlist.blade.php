@@ -7,18 +7,19 @@
 </div>
 
 <div class="game-grid">
-    @forelse($games as $game)
-        <a href="{{ route('games.show', $game) }}" class="game-card">
-            @if($game->cover_image_path)
-                <img src="{{ asset('storage/' . $game->cover_image_path) }}" alt="{{ $game->name }}" class="game-card-cover">
+    @forelse($platforms as $platform)
+        <a href="{{ route('games.show', $platform->game) }}" class="game-card">
+            @if($platform->game->cover_image_path)
+                <img src="{{ asset('storage/' . $platform->game->cover_image_path) }}" alt="{{ $platform->game->name }}" class="game-card-cover">
             @else
                 <div class="game-card-cover-placeholder">🎮</div>
             @endif
             <div class="game-card-body">
-                <div class="game-card-title">{{ $game->name }}</div>
+                <div class="game-card-title">{{ $platform->game->name }}</div>
                 <div class="game-card-meta">
-                    @if($game->platform)<span class="badge badge-platform">{{ $game->platform }}</span>@endif
-                    <form method="POST" action="{{ route('games.toggle-status', $game) }}" style="display:inline;">
+                    <span class="badge badge-platform">{{ $platform->platform }}</span>
+                    <span class="badge badge-format">{{ ucfirst($platform->format) }}</span>
+                    <form method="POST" action="{{ route('platforms.toggle-status', $platform) }}" style="display:inline;" onclick="event.preventDefault(); event.stopPropagation(); this.submit();">
                         @csrf @method('PATCH')
                         <button type="submit" class="btn btn-primary btn-sm" style="margin-top:0.3rem;">Naar Collectie</button>
                     </form>
@@ -33,6 +34,6 @@
 </div>
 
 <div class="pagination">
-    {{ $games->links() }}
+    {{ $platforms->links() }}
 </div>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Models\GamePlatform;
 use App\Models\LegoSet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -15,15 +16,43 @@ class ExportController extends Controller
         return view('export.index');
     }
 
-    // CSV Export Games
+    // CSV Export Games (flattened: one row per platform entry)
     public function exportGamesCsv()
     {
-        $games = Game::all();
-        $csv = $this->buildCsv($games, [
-            'id', 'name', 'platform', 'format', 'status', 'completion_status',
+        $platforms = GamePlatform::with('game')->get();
+
+        $columns = [
+            'game_name', 'platform', 'format', 'status', 'completion_status',
             'genre', 'developer', 'publisher', 'release_date', 'purchase_price',
             'purchase_date', 'condition', 'rating', 'barcode', 'notes',
-        ]);
+        ];
+
+        $output = fopen('php://temp', 'r+');
+        fputcsv($output, $columns, ';');
+
+        foreach ($platforms as $p) {
+            fputcsv($output, [
+                $p->game->name,
+                $p->platform,
+                $p->format,
+                $p->status,
+                $p->completion_status,
+                $p->game->genre,
+                $p->game->developer,
+                $p->game->publisher,
+                $p->game->release_date?->format('Y-m-d'),
+                $p->purchase_price,
+                $p->purchase_date?->format('Y-m-d'),
+                $p->condition,
+                $p->game->rating,
+                $p->barcode,
+                $p->game->notes,
+            ], ';');
+        }
+
+        rewind($output);
+        $csv = stream_get_contents($output);
+        fclose($output);
 
         return Response::make($csv, 200, [
             'Content-Type' => 'text/csv',
@@ -52,7 +81,7 @@ class ExportController extends Controller
     {
         $data = [
             'exported_at' => now()->toIso8601String(),
-            'games' => Game::all()->toArray(),
+            'games' => Game::with('platforms')->get()->toArray(),
             'lego_sets' => LegoSet::all()->toArray(),
         ];
 
@@ -76,34 +105,39 @@ class ExportController extends Controller
 
         $imported = ['games' => 0, 'lego' => 0, 'skipped' => 0];
 
-        // Import games
+        // Import games (with platforms)
         foreach ($data['games'] ?? [] as $gameData) {
-            unset($gameData['id'], $gameData['created_at'], $gameData['updated_at']);
-
-            // Duplicate check: name + platform + format
-            $exists = Game::where('name', $gameData['name'] ?? '')
-                ->where('platform', $gameData['platform'] ?? null)
-                ->where('format', $gameData['format'] ?? 'physical')
-                ->exists();
-
-            if ($exists) {
-                $imported['skipped']++;
-                continue;
-            }
+            $platforms = $gameData['platforms'] ?? [];
+            unset($gameData['id'], $gameData['created_at'], $gameData['updated_at'], $gameData['platforms']);
 
             if (empty($gameData['slug'])) {
                 $gameData['slug'] = Str::slug($gameData['name'] ?? 'game');
             }
 
-            Game::create($gameData);
-            $imported['games']++;
+            $game = Game::where('name', $gameData['name'] ?? '')->first();
+            if (!$game) {
+                $game = Game::create($gameData);
+            }
+
+            foreach ($platforms as $pData) {
+                unset($pData['id'], $pData['created_at'], $pData['updated_at'], $pData['game_id']);
+                $exists = $game->platforms()
+                    ->where('platform', $pData['platform'] ?? '')
+                    ->where('format', $pData['format'] ?? 'physical')
+                    ->exists();
+                if ($exists) {
+                    $imported['skipped']++;
+                } else {
+                    $game->platforms()->create($pData);
+                    $imported['games']++;
+                }
+            }
         }
 
         // Import LEGO sets
         foreach ($data['lego_sets'] ?? [] as $legoData) {
             unset($legoData['id'], $legoData['created_at'], $legoData['updated_at']);
 
-            // Duplicate check: set_number
             if (LegoSet::where('set_number', $legoData['set_number'] ?? '')->exists()) {
                 $imported['skipped']++;
                 continue;
@@ -118,7 +152,7 @@ class ExportController extends Controller
         }
 
         return back()->with('success',
-            "Import voltooid: {$imported['games']} games, {$imported['lego']} LEGO sets geïmporteerd. {$imported['skipped']} duplicaten overgeslagen."
+            "Import voltooid: {$imported['games']} game-platforms, {$imported['lego']} LEGO sets geïmporteerd. {$imported['skipped']} duplicaten overgeslagen."
         );
     }
 

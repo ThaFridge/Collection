@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Models\GamePlatform;
 use App\Models\LegoSet;
 use Illuminate\Support\Facades\DB;
 
@@ -12,28 +13,28 @@ class DashboardController extends Controller
     {
         // Game stats
         $gameStats = [
-            'total' => Game::collection()->count(),
-            'wishlist' => Game::wishlist()->count(),
-            'total_value' => Game::collection()->sum('purchase_price'),
-            'physical' => Game::collection()->where('format', 'physical')->count(),
-            'digital' => Game::collection()->where('format', 'digital')->count(),
-            'both' => Game::collection()->where('format', 'both')->count(),
+            'total' => Game::inCollection()->count(),
+            'wishlist' => Game::onWishlist()->count(),
+            'total_value' => GamePlatform::collection()->sum('purchase_price'),
+            'physical' => GamePlatform::collection()->where('format', 'physical')->count(),
+            'digital' => GamePlatform::collection()->where('format', 'digital')->count(),
+            'both' => GamePlatform::collection()->where('format', 'both')->count(),
         ];
 
-        $gamesByPlatform = Game::collection()
+        $gamesByPlatform = GamePlatform::collection()
             ->select('platform', DB::raw('count(*) as count'))
             ->whereNotNull('platform')
             ->groupBy('platform')
             ->orderByDesc('count')
             ->get();
 
-        $gamesByCompletion = Game::collection()
+        $gamesByCompletion = GamePlatform::collection()
             ->select('completion_status', DB::raw('count(*) as count'))
             ->groupBy('completion_status')
             ->get()
             ->pluck('count', 'completion_status');
 
-        $gamesByGenre = Game::collection()
+        $gamesByGenre = Game::inCollection()
             ->select('genre', DB::raw('count(*) as count'))
             ->whereNotNull('genre')
             ->where('genre', '!=', '')

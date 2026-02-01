@@ -43,7 +43,6 @@
                 <option value="name" {{ request('sort', 'name') == 'name' ? 'selected' : '' }}>Naam A-Z</option>
                 <option value="name-desc" {{ request('sort') == 'name-desc' ? 'selected' : '' }}>Naam Z-A</option>
                 <option value="created_at-desc" {{ request('sort') == 'created_at-desc' ? 'selected' : '' }}>Nieuwste eerst</option>
-                <option value="purchase_price-desc" {{ request('sort') == 'purchase_price-desc' ? 'selected' : '' }}>Prijs hoog-laag</option>
                 <option value="release_date-desc" {{ request('sort') == 'release_date-desc' ? 'selected' : '' }}>Release nieuwst</option>
             </select>
             <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
@@ -62,11 +61,9 @@
             <div class="game-card-body">
                 <div class="game-card-title">{{ $game->name }}</div>
                 <div class="game-card-meta">
-                    @if($game->platform)<span class="badge badge-platform">{{ $game->platform }}</span>@endif
-                    <span class="badge badge-format">{{ ucfirst($game->format) }}</span>
-                    @if($game->completion_status !== 'not_played')
-                        <span class="badge badge-completion badge-{{ $game->completion_status }}">{{ ucfirst($game->completion_status) }}</span>
-                    @endif
+                    @foreach($game->platforms as $p)
+                        <span class="badge badge-platform">{{ $p->platform }}</span>
+                    @endforeach
                 </div>
             </div>
         </a>

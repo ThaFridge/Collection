@@ -25,7 +25,10 @@ Route::get('/api/lego/check-duplicate', [LegoSetController::class, 'checkDuplica
 
 // Games
 Route::get('/games/wishlist', [GameController::class, 'wishlist'])->name('games.wishlist');
-Route::patch('/games/{game}/toggle-status', [GameController::class, 'toggleStatus'])->name('games.toggle-status');
+Route::post('/games/{game}/platforms', [GameController::class, 'addPlatform'])->name('games.platforms.store');
+Route::patch('/platforms/{platform}', [GameController::class, 'updatePlatform'])->name('platforms.update');
+Route::delete('/platforms/{platform}', [GameController::class, 'destroyPlatform'])->name('platforms.destroy');
+Route::patch('/platforms/{platform}/toggle-status', [GameController::class, 'togglePlatformStatus'])->name('platforms.toggle-status');
 Route::post('/games/{game}/toggle-tag', [TagController::class, 'toggleGameTag'])->name('games.toggle-tag');
 Route::resource('games', GameController::class);
 

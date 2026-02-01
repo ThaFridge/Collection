@@ -9,10 +9,9 @@ use Illuminate\Support\Str;
 class Game extends Model
 {
     protected $fillable = [
-        'name', 'platform', 'slug', 'cover_image_path', 'cover_image_url',
+        'name', 'slug', 'cover_image_path', 'cover_image_url',
         'release_date', 'genre', 'developer', 'publisher', 'description',
-        'purchase_price', 'purchase_date', 'condition', 'notes', 'status',
-        'completion_status', 'rating', 'format', 'barcode',
+        'notes', 'rating',
         'external_api_id', 'external_api_source', 'metadata_json',
     ];
 
@@ -20,8 +19,6 @@ class Game extends Model
     {
         return [
             'release_date' => 'date',
-            'purchase_date' => 'date',
-            'purchase_price' => 'decimal:2',
             'metadata_json' => 'array',
             'rating' => 'integer',
         ];
@@ -36,14 +33,9 @@ class Game extends Model
         });
     }
 
-    public function scopeCollection(Builder $query): Builder
+    public function platforms()
     {
-        return $query->where('status', 'collection');
-    }
-
-    public function scopeWishlist(Builder $query): Builder
-    {
-        return $query->where('status', 'wishlist');
+        return $this->hasMany(GamePlatform::class);
     }
 
     public function images()
@@ -54,5 +46,21 @@ class Game extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'game_tag');
+    }
+
+    /**
+     * Games that have at least one platform in collection.
+     */
+    public function scopeInCollection(Builder $query): Builder
+    {
+        return $query->whereHas('platforms', fn ($q) => $q->where('status', 'collection'));
+    }
+
+    /**
+     * Games that have at least one platform on wishlist.
+     */
+    public function scopeOnWishlist(Builder $query): Builder
+    {
+        return $query->whereHas('platforms', fn ($q) => $q->where('status', 'wishlist'));
     }
 }
