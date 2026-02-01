@@ -301,6 +301,9 @@
             <li><a href="{{ route('lego.wishlist') }}" class="{{ request()->routeIs('lego.wishlist') ? 'active' : '' }}">LEGO Wishlist</a></li>
             <li><a href="{{ route('lego.create') }}" class="{{ request()->routeIs('lego.create') ? 'active' : '' }}">+ LEGO</a></li>
             <li><div class="nav-divider"></div></li>
+            <li><a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a></li>
+            <li><a href="{{ route('tags.index') }}" class="{{ request()->routeIs('tags.*') ? 'active' : '' }}">Tags</a></li>
+            <li><a href="{{ route('export.index') }}" class="{{ request()->routeIs('export.*') ? 'active' : '' }}">Export</a></li>
             <li><a href="{{ route('admin.index') }}" class="{{ request()->routeIs('admin.*') ? 'active' : '' }}">Admin</a></li>
             <li><button class="theme-toggle" onclick="toggleTheme()">&#127763;</button></li>
         </ul>

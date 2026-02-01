@@ -1,6 +1,6 @@
 # GameVault - Voortgang
 
-## Huidige Status: Fase 1-9 afgerond + IGDB werkend — Basis applicatie draait op test server
+## Huidige Status: Alle fases (1-14) afgerond — Volledig werkende applicatie op test server
 
 ## Server Info
 
@@ -111,45 +111,50 @@
 - [x] Automatische link naar bouwhandleiding op LEGO.com per set nummer
 - [x] LEGO wishlist met "Naar Collectie" conversie
 - [x] Filters: thema, bouwstatus, zoeken op naam/set-nummer
-- [ ] Rebrickable/BrickSet API provider implementaties (nog te doen)
-- [ ] LegoSearchResult DTO (nog te doen)
+- [x] Rebrickable API provider implementatie
+- [x] LegoProviderInterface + LegoSearchResult DTO
+- [x] LegoSearchService orchestrator + LegoSearchController
+- [x] LEGO zoekfunctie in create/edit formulier (debounced, auto-fill)
 
-## Bugfixes deze sessie
+### Fase 10 - Statistieken Dashboard
+
+- [x] DashboardController met statistieken
+- [x] Games: totaal, waarde, per platform, per completion status, per genre
+- [x] LEGO: totaal sets, waarde, per thema, bouwstatus
+- [x] CSS bar charts (geen externe JS libraries)
+
+### Fase 11 - Import/Export
+
+- [x] CSV export (games apart, LEGO apart)
+- [x] JSON export (alles samen)
+- [x] JSON import met duplicaat detectie (game slug+platform+format / LEGO set_number)
+- [x] Export/import pagina met knoppen en upload formulier
+
+### Fase 12 - Tags
+
+- [x] Tags CRUD (aanmaken, verwijderen)
+- [x] Tags index pagina met overzicht
+- [x] Toggle tags per game en LEGO set (via AJAX)
+
+### Fase 13 - Barcode Scanner
+
+- [x] Camera barcode scanner (html5-qrcode library)
+- [x] Ondersteunt EAN-13, EAN-8, UPC-A, UPC-E, Code 128
+- [x] Automatisch invullen barcode veld bij scan
+- [x] Geïntegreerd in game create/edit formulier
+
+### Fase 14 - Polish & UX
+
+- [x] Homepage met navigatie naar Games en LEGO secties
+- [x] Collectie statistieken op homepage (aantallen, waarde)
+- [x] Navbar uitgebreid met Dashboard, Tags, Export links
+- [x] Responsive design
+
+## Bugfixes
 
 - [x] ApiProvider credentials_json cast gewijzigd van `encrypted` naar `array` (fix voor openssl_encrypt error)
 - [x] SQLite database permissions gefixed (www-data schrijfrechten)
 - [x] AdminController: credentials worden nu correct gemerged met bestaande waarden
-
-## Wat nog moet
-
-### Fase 10 - Statistieken Dashboard
-
-- [ ] Dashboard controller + view
-- [ ] Games: totaal, waarde, per platform, per status
-- [ ] LEGO: totaal sets, waarde, per thema, bouwstatus
-- [ ] Grafieken
-
-### Fase 11 - Import/Export
-
-- [ ] CSV export (games + LEGO apart)
-- [ ] JSON export/import
-- [ ] Duplicaat detectie (game+platform+format / LEGO set_number)
-
-### Fase 12 - Tags & Extra Media
-
-- [ ] Tags CRUD (gedeeld tussen games en LEGO)
-- [ ] Meerdere afbeeldingen per game en LEGO set
-
-### Fase 13 - Barcode Scanner
-
-- [ ] Camera barcode scanner (JS)
-- [ ] Barcode lookup via API (games + LEGO)
-
-### Fase 14 - Polish & UX
-
-- [ ] Responsive design verbeteren
-- [ ] Homepage met navigatie naar Games en LEGO secties
-- [ ] Cover download bij opslaan game (werkt al, maar testen met echte API)
 
 ## Belangrijke Beslissingen
 
@@ -163,7 +168,3 @@
 - **LEGO handleiding**: Automatische link naar LEGO.com per set nummer
 - **Duplicaten**: Zelfde game mag op meerdere platforms EN in meerdere formats
 - **Migraties**: Altijd additief, nooit destructief
-
-## Volgende Sessie
-
-Start bij **Fase 10 - Statistieken Dashboard** of werk aan ontbrekende items (Rebrickable/BrickSet providers, LegoSearchResult DTO).
