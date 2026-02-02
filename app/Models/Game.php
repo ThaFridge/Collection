@@ -13,6 +13,7 @@ class Game extends Model
         'release_date', 'genre', 'developer', 'publisher', 'description',
         'notes', 'rating',
         'external_api_id', 'external_api_source', 'metadata_json',
+        'achievements_fetched', 'achievements_supported',
     ];
 
     protected function casts(): array
@@ -21,6 +22,8 @@ class Game extends Model
             'release_date' => 'date',
             'metadata_json' => 'array',
             'rating' => 'integer',
+            'achievements_fetched' => 'boolean',
+            'achievements_supported' => 'boolean',
         ];
     }
 
@@ -41,6 +44,11 @@ class Game extends Model
     public function images()
     {
         return $this->hasMany(GameImage::class)->orderBy('sort_order');
+    }
+
+    public function achievements()
+    {
+        return $this->hasMany(GameAchievement::class);
     }
 
     public function tags()

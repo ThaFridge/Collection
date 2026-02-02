@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\GamePlatform;
 use App\Models\Tag;
+use App\Services\ApiProviders\RawgProvider;
+use App\Services\ApiProviders\IgdbProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -41,6 +43,9 @@ class GameController extends Controller
         $platforms = GamePlatform::collection()
             ->distinct()->pluck('platform')->sort()->values();
 
+        $genres = Game::inCollection()->whereNotNull('genre')
+            ->where('genre', '!=', '')->distinct()->pluck('genre')->sort()->values();
+
         $stats = [
             'total' => Game::inCollection()->count(),
             'total_value' => GamePlatform::collection()->sum('purchase_price'),
@@ -48,7 +53,7 @@ class GameController extends Controller
             'digital' => GamePlatform::collection()->where('format', 'digital')->count(),
         ];
 
-        return view('games.index', compact('games', 'platforms', 'stats'));
+        return view('games.index', compact('games', 'platforms', 'genres', 'stats'));
     }
 
     public function create()
@@ -68,14 +73,13 @@ class GameController extends Controller
             'cover_image_url' => 'nullable|url|max:500',
             'rating' => 'nullable|integer|min:1|max:10',
             'notes' => 'nullable|string',
-            'platform' => 'required|string|max:50',
+            'platforms' => 'required|array|min:1',
+            'platforms.*' => 'string|max:50',
             'format' => 'required|in:physical,digital,both',
             'status' => 'required|in:collection,wishlist',
             'completion_status' => 'required|in:not_played,playing,completed,platinum',
             'purchase_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
-            'condition' => 'nullable|string|max:50',
-            'barcode' => 'nullable|string|max:50',
         ]);
 
         $gameData = $request->only([
@@ -96,18 +100,37 @@ class GameController extends Controller
             $game = Game::create($gameData);
         }
 
-        // Add platform
-        $game->platforms()->create($request->only([
-            'platform', 'format', 'status', 'completion_status',
-            'purchase_price', 'purchase_date', 'condition', 'barcode',
-        ]));
+        // Add platform entries for each selected platform
+        $platformData = $request->only([
+            'format', 'status', 'completion_status',
+            'purchase_price', 'purchase_date',
+        ]);
+
+        foreach ($request->platforms as $platform) {
+            $game->platforms()->create(array_merge($platformData, ['platform' => $platform]));
+        }
+
+        // Fetch achievements and screenshots from RAWG
+        $this->fetchAchievements($game);
+        $this->fetchScreenshots($game);
 
         return redirect()->route('games.show', $game)->with('success', 'Game toegevoegd!');
     }
 
     public function show(Game $game)
     {
-        $game->load('platforms', 'images', 'tags');
+        // Auto-fetch achievements and screenshots if not yet fetched
+        if ($game->external_api_id && in_array($game->external_api_source, ['rawg', 'igdb'])) {
+            if (!$game->achievements_fetched) {
+                $this->fetchAchievements($game);
+            }
+            if ($game->images()->count() === 0) {
+                $this->fetchScreenshots($game);
+            }
+            $game->refresh();
+        }
+
+        $game->load('platforms', 'images', 'tags', 'achievements');
         $allTags = Tag::orderBy('name')->get();
 
         return view('games.show', compact('game', 'allTags'));
@@ -115,7 +138,7 @@ class GameController extends Controller
 
     public function edit(Game $game)
     {
-        $game->load('platforms');
+        $game->load('platforms', 'images');
         return view('games.edit', compact('game'));
     }
 
@@ -176,13 +199,12 @@ class GameController extends Controller
             'completion_status' => 'required|in:not_played,playing,completed,platinum',
             'purchase_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
-            'condition' => 'nullable|string|max:50',
             'barcode' => 'nullable|string|max:50',
         ]);
 
         $game->platforms()->create($request->only([
             'platform', 'format', 'status', 'completion_status',
-            'purchase_price', 'purchase_date', 'condition', 'barcode',
+            'purchase_price', 'purchase_date', 'barcode',
         ]));
 
         return back()->with('success', 'Platform toegevoegd!');
@@ -195,13 +217,12 @@ class GameController extends Controller
             'completion_status' => 'required|in:not_played,playing,completed,platinum',
             'purchase_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
-            'condition' => 'nullable|string|max:50',
             'barcode' => 'nullable|string|max:50',
         ]);
 
         $platform->update($request->only([
             'status', 'completion_status',
-            'purchase_price', 'purchase_date', 'condition', 'barcode',
+            'purchase_price', 'purchase_date', 'barcode',
         ]));
 
         return back()->with('success', 'Platform bijgewerkt!');
@@ -237,6 +258,115 @@ class GameController extends Controller
             ->where('format', $request->format)
             ->whereHas('game', fn ($q) => $q->where('name', $request->name));
         return response()->json(['exists' => $query->exists()]);
+    }
+
+    public function refreshAchievements(Game $game)
+    {
+        $game->achievements()->delete();
+        $game->update(['achievements_fetched' => false]);
+        $this->fetchAchievements($game);
+
+        return back()->with('success', 'Achievements vernieuwd!');
+    }
+
+    private function getProvider(Game $game): RawgProvider|IgdbProvider|null
+    {
+        return match ($game->external_api_source) {
+            'rawg' => app(RawgProvider::class),
+            'igdb' => app(IgdbProvider::class),
+            default => null,
+        };
+    }
+
+    private function fetchAchievements(Game $game): void
+    {
+        if (!$game->external_api_id || !in_array($game->external_api_source, ['rawg', 'igdb'])) {
+            $game->update(['achievements_fetched' => true, 'achievements_supported' => false]);
+            return;
+        }
+
+        try {
+            $provider = $this->getProvider($game);
+            if (!$provider || !$provider->isConfigured()) return;
+
+            $achievements = $provider->fetchAchievements($game->external_api_id);
+
+            if ($achievements === null || empty($achievements)) {
+                $game->update(['achievements_fetched' => true, 'achievements_supported' => count($achievements ?? []) > 0]);
+                return;
+            }
+
+            foreach ($achievements as $a) {
+                $game->achievements()->create($a);
+            }
+
+            $game->update(['achievements_fetched' => true, 'achievements_supported' => true]);
+        } catch (\Exception $e) {
+            // Silently fail - achievements are not critical
+        }
+    }
+
+    public function uploadScreenshot(Request $request, Game $game)
+    {
+        $request->validate([
+            'screenshot' => 'required|image|max:5120',
+        ]);
+
+        if ($game->images()->count() >= 8) {
+            return back()->with('error', 'Maximaal 8 screenshots per game.');
+        }
+
+        $path = $request->file('screenshot')->store('screenshots/' . $game->id, 'public');
+        $sortOrder = $game->images()->max('sort_order') + 1;
+
+        $game->images()->create([
+            'image_path' => $path,
+            'type' => 'screenshot',
+            'sort_order' => $sortOrder,
+        ]);
+
+        return back()->with('success', 'Screenshot toegevoegd!');
+    }
+
+    public function deleteScreenshot(Game $game, \App\Models\GameImage $image)
+    {
+        if ($image->game_id !== $game->id) abort(404);
+
+        if (Storage::disk('public')->exists($image->image_path)) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+        $image->delete();
+
+        return back()->with('success', 'Screenshot verwijderd!');
+    }
+
+    private function fetchScreenshots(Game $game): void
+    {
+        if (!$game->external_api_id || !in_array($game->external_api_source, ['rawg', 'igdb'])) return;
+
+        try {
+            $provider = $this->getProvider($game);
+            if (!$provider || !$provider->isConfigured()) return;
+
+            $urls = $provider->fetchScreenshots($game->external_api_id, 8);
+
+            foreach ($urls as $i => $url) {
+                $contents = file_get_contents($url);
+                if ($contents === false) continue;
+
+                $extension = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
+                $filename = 'screenshots/' . $game->id . '/' . Str::uuid() . '.' . $extension;
+                Storage::disk('public')->put($filename, $contents);
+
+                $game->images()->create([
+                    'image_path' => $filename,
+                    'type' => 'screenshot',
+                    'sort_order' => $i,
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Silently fail
+        }
     }
 
     private function downloadCover(string $url): ?string

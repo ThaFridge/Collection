@@ -8,7 +8,7 @@ class GamePlatform extends Model
 {
     protected $fillable = [
         'game_id', 'platform', 'format', 'status', 'completion_status',
-        'purchase_price', 'purchase_date', 'condition', 'barcode', 'notes',
+        'purchase_price', 'purchase_date', 'barcode', 'notes',
     ];
 
     protected $casts = [

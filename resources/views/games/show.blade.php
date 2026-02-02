@@ -12,14 +12,24 @@
     </div>
     <div class="detail-info">
         <h1 class="detail-title">{{ $game->name }}</h1>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
-            @if($game->rating)
-                <span class="badge" style="background:var(--warning);color:#fff;">{{ $game->rating }}/10</span>
-            @endif
+
+        {{-- Platform badges --}}
+        @if($game->platforms->count())
+        <div style="display:flex;gap:0.35rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+            @foreach($game->platforms as $platform)
+                <span class="badge badge-platform">{{ $platform->platform }}</span>
+            @endforeach
         </div>
+        @endif
+
+        @if($game->rating)
+            <div style="margin-bottom:0.5rem;">
+                <span class="badge" style="background:var(--warning);color:#fff;">{{ $game->rating }}/10</span>
+            </div>
+        @endif
 
         @if($game->description)
-            <p style="color:var(--text-muted);margin:1rem 0;line-height:1.6;">{{ $game->description }}</p>
+            <p style="color:var(--text-muted);margin:0.75rem 0;line-height:1.6;">{{ $game->description }}</p>
         @endif
 
         <dl class="detail-meta">
@@ -60,139 +70,119 @@
     </div>
 </div>
 
-{{-- Platforms sectie --}}
+{{-- Platforms --}}
+@if($game->platforms->count())
 <div style="margin-top:2rem;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h2 style="margin:0;">Platforms</h2>
-        <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('add-platform-form').style.display = document.getElementById('add-platform-form').style.display === 'none' ? 'block' : 'none'">+ Platform toevoegen</button>
-    </div>
-
-    {{-- Add platform form --}}
-    <div id="add-platform-form" style="display:none;padding:1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;margin-bottom:1rem;">
-        <form method="POST" action="{{ route('games.platforms.store', $game) }}">
-            @csrf
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Platform *</label>
-                    <select name="platform" class="form-control" required>
-                        <option value="">Selecteer...</option>
-                        @foreach(['PS5','PS4','PS3','PS2','PS1','PSP','PS Vita','Xbox Series X','Xbox One','Xbox 360','Xbox','Nintendo Switch','Wii U','Wii','GameCube','N64','SNES','NES','3DS','DS','Game Boy','Game Boy Advance','PC','Steam Deck','Sega Mega Drive','Sega Dreamcast'] as $p)
-                            <option value="{{ $p }}">{{ $p }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Format *</label>
-                    <select name="format" class="form-control" required>
-                        <option value="physical">Fysiek</option>
-                        <option value="digital">Digitaal</option>
-                        <option value="both">Beide</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Status *</label>
-                    <select name="status" class="form-control" required>
-                        <option value="collection">Collectie</option>
-                        <option value="wishlist">Wishlist</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Voortgang *</label>
-                    <select name="completion_status" class="form-control" required>
-                        <option value="not_played">Niet gespeeld</option>
-                        <option value="playing">Bezig</option>
-                        <option value="completed">Uitgespeeld</option>
-                        <option value="platinum">Platinum</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Aankoopprijs (&euro;)</label>
-                    <input type="number" name="purchase_price" class="form-control" step="0.01" min="0">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Aankoopdatum</label>
-                    <input type="date" name="purchase_date" class="form-control">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Conditie</label>
-                    <select name="condition" class="form-control">
-                        <option value="">Selecteer...</option>
-                        @foreach(['New', 'Good', 'Fair', 'Poor'] as $c)
-                            <option value="{{ $c }}">{{ $c }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Barcode</label>
-                    <input type="text" name="barcode" class="form-control">
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Platform toevoegen</button>
-        </form>
-    </div>
-
-    {{-- Platforms tabel --}}
+    <h2 style="margin-bottom:1rem;">Platforms</h2>
     <div style="overflow-x:auto;">
         <table style="width:100%;border-collapse:collapse;">
             <thead>
                 <tr style="border-bottom:2px solid var(--border);text-align:left;">
-                    <th style="padding:0.75rem 0.5rem;">Platform</th>
-                    <th style="padding:0.75rem 0.5rem;">Format</th>
-                    <th style="padding:0.75rem 0.5rem;">Status</th>
-                    <th style="padding:0.75rem 0.5rem;">Voortgang</th>
-                    <th style="padding:0.75rem 0.5rem;">Prijs</th>
-                    <th style="padding:0.75rem 0.5rem;">Conditie</th>
-                    <th style="padding:0.75rem 0.5rem;">Acties</th>
+                    <th style="padding:0.5rem;">Platform</th>
+                    <th style="padding:0.5rem;">Format</th>
+                    <th style="padding:0.5rem;">Voortgang</th>
+                    <th style="padding:0.5rem;">Prijs</th>
                 </tr>
             </thead>
             <tbody>
+                @php $labels = ['not_played' => 'Niet gespeeld', 'playing' => 'Bezig', 'completed' => 'Uitgespeeld', 'platinum' => 'Platinum']; @endphp
                 @foreach($game->platforms as $platform)
                 <tr style="border-bottom:1px solid var(--border);">
-                    <td style="padding:0.75rem 0.5rem;font-weight:600;">{{ $platform->platform }}</td>
-                    <td style="padding:0.75rem 0.5rem;">{{ ucfirst($platform->format) }}</td>
-                    <td style="padding:0.75rem 0.5rem;">
-                        <span class="badge {{ $platform->status === 'collection' ? 'badge-platform' : 'badge-format' }}">
-                            {{ $platform->status === 'collection' ? 'Collectie' : 'Wishlist' }}
-                        </span>
+                    <td style="padding:0.5rem;font-weight:600;">{{ $platform->platform }}</td>
+                    <td style="padding:0.5rem;">{{ $platform->format === 'physical' ? 'Fysiek' : ($platform->format === 'digital' ? 'Digitaal' : 'Beide') }}</td>
+                    <td style="padding:0.5rem;">
+                        <span class="badge badge-completion badge-{{ $platform->completion_status }}">{{ $labels[$platform->completion_status] ?? $platform->completion_status }}</span>
                     </td>
-                    <td style="padding:0.75rem 0.5rem;">
-                        @php
-                            $labels = ['not_played' => 'Niet gespeeld', 'playing' => 'Bezig', 'completed' => 'Uitgespeeld', 'platinum' => 'Platinum'];
-                        @endphp
-                        {{ $labels[$platform->completion_status] ?? $platform->completion_status }}
-                    </td>
-                    <td style="padding:0.75rem 0.5rem;">
-                        @if($platform->purchase_price)
-                            &euro;{{ number_format($platform->purchase_price, 2, ',', '.') }}
-                        @else
-                            -
-                        @endif
-                    </td>
-                    <td style="padding:0.75rem 0.5rem;">{{ $platform->condition ?? '-' }}</td>
-                    <td style="padding:0.75rem 0.5rem;">
-                        <div style="display:flex;gap:0.25rem;">
-                            <form method="POST" action="{{ route('platforms.toggle-status', $platform) }}" style="display:inline;">
-                                @csrf @method('PATCH')
-                                <button type="submit" class="btn btn-secondary btn-sm">
-                                    {{ $platform->status === 'collection' ? 'Wishlist' : 'Collectie' }}
-                                </button>
-                            </form>
-                            <form id="delete-platform-{{ $platform->id }}" method="POST" action="{{ route('platforms.destroy', $platform) }}" style="display:inline;">
-                                @csrf @method('DELETE')
-                                <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(document.getElementById('delete-platform-{{ $platform->id }}'), 'Platform verwijderen?', '{{ $platform->platform }} wordt verwijderd.')">X</button>
-                            </form>
-                        </div>
-                    </td>
+                    <td style="padding:0.5rem;">{{ $platform->purchase_price ? '€' . number_format($platform->purchase_price, 2, ',', '.') : '-' }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
 </div>
+@endif
+
+{{-- Screenshots --}}
+@if($game->images->count())
+<div style="margin-top:2rem;">
+    <h2 style="margin-bottom:1rem;">Screenshots</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));gap:0.75rem;">
+        @foreach($game->images as $image)
+            <div style="position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+                <img src="{{ asset('storage/' . $image->image_path) }}" alt="Screenshot" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:pointer;" onclick="openLightbox('{{ asset('storage/' . $image->image_path) }}')">
+                <form method="POST" action="{{ route('games.screenshots.destroy', [$game, $image]) }}" style="position:absolute;top:0.35rem;right:0.35rem;">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm" style="padding:0.15rem 0.4rem;font-size:0.7rem;opacity:0.8;">X</button>
+                </form>
+            </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
+@if($game->images->count() < 8)
+<div style="margin-top:1rem;">
+    <form method="POST" action="{{ route('games.screenshots.store', $game) }}" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;">
+        @csrf
+        <input type="file" name="screenshot" accept="image/*" class="form-control" style="max-width:300px;">
+        <button type="submit" class="btn btn-secondary btn-sm">Screenshot uploaden</button>
+    </form>
+</div>
+@endif
+
+{{-- Lightbox --}}
+<div id="lightbox" onclick="closeLightbox()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;cursor:pointer;">
+    <img id="lightbox-img" src="" alt="" style="max-width:90%;max-height:90%;border-radius:8px;">
+</div>
+
+@push('scripts')
+<script>
+function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').style.display = 'flex';
+}
+function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLightbox(); });
+</script>
+@endpush
+
+{{-- Achievements --}}
+@if($game->achievements_fetched && $game->achievements_supported && $game->achievements->count())
+<div style="margin-top:2rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h2 style="margin:0;">Achievements <span style="font-size:0.9rem;font-weight:400;color:var(--text-muted);">({{ $game->achievements->count() }})</span></h2>
+        @if($game->external_api_id && in_array($game->external_api_source, ['rawg', 'igdb']))
+            <form method="POST" action="{{ route('games.refresh-achievements', $game) }}" style="display:inline;">
+                @csrf
+                <button type="submit" class="btn btn-secondary btn-sm">Vernieuwen</button>
+            </form>
+        @endif
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));gap:0.75rem;">
+        @foreach($game->achievements as $achievement)
+            <div style="display:flex;gap:0.75rem;padding:0.75rem;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;align-items:center;">
+                @if($achievement->image_url)
+                    <img src="{{ $achievement->image_url }}" alt="" style="width:48px;height:48px;border-radius:6px;object-fit:cover;flex-shrink:0;">
+                @else
+                    <div style="width:48px;height:48px;border-radius:6px;background:var(--bg-input);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.2rem;">🏆</div>
+                @endif
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:600;font-size:0.85rem;">{{ $achievement->name }}</div>
+                    @if($achievement->description)
+                        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.15rem;">{{ $achievement->description }}</div>
+                    @endif
+                </div>
+                @if($achievement->percent !== null)
+                    <div style="flex-shrink:0;text-align:center;">
+                        <div style="font-size:0.75rem;font-weight:700;color:var(--accent);">{{ number_format($achievement->percent, 1) }}%</div>
+                        <div style="font-size:0.6rem;color:var(--text-muted);">spelers</div>
+                    </div>
+                @endif
+            </div>
+        @endforeach
+    </div>
+</div>
+@endif
 @endsection

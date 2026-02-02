@@ -32,6 +32,12 @@
                     <option value="{{ $p }}" {{ request('platform') == $p ? 'selected' : '' }}>{{ $p }}</option>
                 @endforeach
             </select>
+            <select name="genre" onchange="this.form.submit()">
+                <option value="">Alle genres</option>
+                @foreach($genres as $g)
+                    <option value="{{ $g }}" {{ request('genre') == $g ? 'selected' : '' }}>{{ $g }}</option>
+                @endforeach
+            </select>
             <select name="completion_status" onchange="this.form.submit()">
                 <option value="">Alle statussen</option>
                 <option value="not_played" {{ request('completion_status') == 'not_played' ? 'selected' : '' }}>Niet gespeeld</option>
@@ -61,9 +67,27 @@
             <div class="game-card-body">
                 <div class="game-card-title">{{ $game->name }}</div>
                 <div class="game-card-meta">
+                    @if($game->release_date)
+                        {{ $game->release_date->format('Y') }}
+                    @endif
+                    @if($game->genre)
+                        &middot; {{ $game->genre }}
+                    @endif
+                </div>
+                <div style="display:flex;gap:0.25rem;flex-wrap:wrap;margin-top:0.35rem;">
                     @foreach($game->platforms as $p)
                         <span class="badge badge-platform">{{ $p->platform }}</span>
                     @endforeach
+                    @php
+                        $bestStatus = $game->platforms->sortByDesc(fn($p) => match($p->completion_status) {
+                            'platinum' => 4, 'completed' => 3, 'playing' => 2, default => 1
+                        })->first()?->completion_status;
+                    @endphp
+                    @if($bestStatus && $bestStatus !== 'not_played')
+                        <span class="badge badge-completion badge-{{ $bestStatus }}">
+                            {{ match($bestStatus) { 'playing' => 'Bezig', 'completed' => 'Uitgespeeld', 'platinum' => 'Platinum', default => '' } }}
+                        </span>
+                    @endif
                 </div>
             </div>
         </a>

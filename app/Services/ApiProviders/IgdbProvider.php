@@ -127,6 +127,43 @@ class IgdbProvider implements ApiProviderInterface
         return $details['cover_url'] ?? null;
     }
 
+    public function fetchScreenshots(string $externalId, int $max = 8): array
+    {
+        if (!$this->isConfigured()) return [];
+
+        $token = $this->getAccessToken();
+        if (!$token) return [];
+
+        $body = 'where game = ' . (int) $externalId . '; fields url; limit ' . $max . ';';
+
+        $response = Http::timeout(10)
+            ->withHeaders([
+                'Client-ID' => $this->clientId,
+                'Authorization' => 'Bearer ' . $token,
+            ])
+            ->withBody($body, 'text/plain')
+            ->post('https://api.igdb.com/v4/screenshots');
+
+        if (!$response->successful()) return [];
+
+        return collect($response->json())
+            ->pluck('url')
+            ->filter()
+            ->map(function ($url) {
+                $url = str_replace('t_thumb', 't_screenshot_big', $url);
+                return str_starts_with($url, '//') ? 'https:' . $url : $url;
+            })
+            ->take($max)
+            ->values()
+            ->toArray();
+    }
+
+    public function fetchAchievements(string $externalId): ?array
+    {
+        // IGDB v4 does not have an achievements endpoint
+        return null;
+    }
+
     private function getAccessToken(): ?string
     {
         return Cache::remember('igdb_access_token', 3600, function () {

@@ -212,6 +212,7 @@
         .badge-platform { background: var(--accent); color: #fff; }
         .badge-format { background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border); }
         .badge-completion { font-size: 0.65rem; }
+        .badge-not_played { background: var(--bg-input); color: var(--text-muted); }
         .badge-playing { background: rgba(243,156,18,0.2); color: var(--warning); }
         .badge-completed { background: rgba(46,204,113,0.2); color: var(--success); }
         .badge-platinum { background: rgba(52,152,219,0.2); color: #3498db; }

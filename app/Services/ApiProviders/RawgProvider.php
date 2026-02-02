@@ -75,4 +75,57 @@ class RawgProvider implements ApiProviderInterface
         $details = $this->fetchDetails($externalId);
         return $details['cover_url'] ?? null;
     }
+
+    public function fetchAchievements(string $externalId): ?array
+    {
+        if (!$this->isConfigured()) return null;
+
+        $achievements = [];
+        $page = 1;
+
+        do {
+            $response = Http::get("https://api.rawg.io/api/games/{$externalId}/achievements", [
+                'key' => $this->apiKey,
+                'page_size' => 50,
+                'page' => $page,
+            ]);
+
+            if (!$response->successful()) break;
+
+            $data = $response->json();
+            $results = $data['results'] ?? [];
+
+            foreach ($results as $a) {
+                $achievements[] = [
+                    'name' => $a['name'] ?? '',
+                    'description' => $a['description'] ?? null,
+                    'image_url' => $a['image'] ?? null,
+                    'percent' => isset($a['percent']) ? (float) $a['percent'] : null,
+                ];
+            }
+
+            $page++;
+        } while (!empty($data['next']) && $page <= 10);
+
+        return $achievements;
+    }
+
+    public function fetchScreenshots(string $externalId, int $max = 8): array
+    {
+        if (!$this->isConfigured()) return [];
+
+        $response = Http::get("https://api.rawg.io/api/games/{$externalId}/screenshots", [
+            'key' => $this->apiKey,
+            'page_size' => $max,
+        ]);
+
+        if (!$response->successful()) return [];
+
+        return collect($response->json('results', []))
+            ->take($max)
+            ->pluck('image')
+            ->filter()
+            ->values()
+            ->toArray();
+    }
 }

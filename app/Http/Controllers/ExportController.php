@@ -24,7 +24,7 @@ class ExportController extends Controller
         $columns = [
             'game_name', 'platform', 'format', 'status', 'completion_status',
             'genre', 'developer', 'publisher', 'release_date', 'purchase_price',
-            'purchase_date', 'condition', 'rating', 'barcode', 'notes',
+            'purchase_date', 'rating', 'barcode', 'notes',
         ];
 
         $output = fopen('php://temp', 'r+');
@@ -43,7 +43,6 @@ class ExportController extends Controller
                 $p->game->release_date?->format('Y-m-d'),
                 $p->purchase_price,
                 $p->purchase_date?->format('Y-m-d'),
-                $p->condition,
                 $p->game->rating,
                 $p->barcode,
                 $p->game->notes,
