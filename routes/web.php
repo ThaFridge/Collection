@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\MagazineController;
 
 // Homepage
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -41,6 +42,9 @@ Route::patch('/lego/{lego_set}/toggle-status', [LegoSetController::class, 'toggl
 Route::patch('/lego/{lego_set}/build-status', [LegoSetController::class, 'updateBuildStatus'])->name('lego.build-status');
 Route::post('/lego/{lego_set}/toggle-tag', [TagController::class, 'toggleLegoTag'])->name('lego.toggle-tag');
 Route::resource('lego', LegoSetController::class)->parameters(['lego' => 'lego_set']);
+
+// Magazines
+Route::resource('magazines', MagazineController::class);
 
 // Tags
 Route::get('/tags', [TagController::class, 'index'])->name('tags.index');

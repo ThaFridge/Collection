@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\GamePlatform;
 use App\Models\LegoSet;
+use App\Models\Magazine;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -66,9 +67,21 @@ class DashboardController extends Controller
             ->get()
             ->pluck('count', 'build_status');
 
+        // Magazine stats
+        $magazineStats = [
+            'total' => Magazine::count(),
+            'publishers' => Magazine::whereNotNull('publisher')->distinct('publisher')->count('publisher'),
+        ];
+
+        $magazinesByYear = Magazine::select('year', DB::raw('count(*) as count'))
+            ->groupBy('year')
+            ->orderByDesc('year')
+            ->get();
+
         return view('dashboard.index', compact(
             'gameStats', 'gamesByPlatform', 'gamesByCompletion', 'gamesByGenre',
-            'legoStats', 'legoByTheme', 'legoByBuildStatus'
+            'legoStats', 'legoByTheme', 'legoByBuildStatus',
+            'magazineStats', 'magazinesByYear'
         ));
     }
 }

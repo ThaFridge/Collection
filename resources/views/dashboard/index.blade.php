@@ -147,4 +147,35 @@
         @endforeach
     </div>
 </div>
+
+<!-- Magazine Statistics -->
+<h2 style="margin-bottom:1rem;">Magazines</h2>
+<div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-value">{{ $magazineStats['total'] }}</div>
+        <div class="stat-label">Magazines</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-value">{{ $magazineStats['publishers'] }}</div>
+        <div class="stat-label">Uitgevers</div>
+    </div>
+</div>
+
+@if($magazinesByYear->count())
+<div style="display:grid;grid-template-columns:1fr;gap:1.5rem;margin-bottom:2rem;max-width:50%;">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+        <h3 style="margin-bottom:1rem;">Per jaar</h3>
+        @foreach($magazinesByYear as $item)
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+            <div style="width:60px;font-size:0.85rem;">{{ $item->year }}</div>
+            <div style="flex:1;height:24px;background:var(--bg-input);border-radius:4px;overflow:hidden;">
+                <div style="height:100%;background:var(--accent);border-radius:4px;width:{{ $magazineStats['total'] > 0 ? round($item->count / $magazineStats['total'] * 100) : 0 }}%;display:flex;align-items:center;padding-left:6px;">
+                    <span style="font-size:0.75rem;color:#fff;font-weight:600;">{{ $item->count }}</span>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
 @endsection

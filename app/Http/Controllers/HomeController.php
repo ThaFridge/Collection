@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\GamePlatform;
 use App\Models\LegoSet;
+use App\Models\Magazine;
 
 class HomeController extends Controller
 {
@@ -17,6 +18,7 @@ class HomeController extends Controller
             'legoCount' => LegoSet::collection()->count(),
             'legoPieces' => LegoSet::collection()->sum('piece_count'),
             'legoValue' => LegoSet::collection()->sum('purchase_price'),
+            'magazineCount' => Magazine::count(),
         ]);
     }
 }

@@ -413,6 +413,13 @@
                     <a href="{{ route('lego.create') }}" class="{{ request()->routeIs('lego.create') ? 'active' : '' }}">+ Set toevoegen</a>
                 </div>
             </li>
+            <li class="nav-dropdown">
+                <button class="nav-dropdown-toggle {{ request()->routeIs('magazines.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">Magazines</button>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ route('magazines.index') }}" class="{{ request()->routeIs('magazines.index') ? 'active' : '' }}">Overzicht</a>
+                    <a href="{{ route('magazines.create') }}" class="{{ request()->routeIs('magazines.create') ? 'active' : '' }}">+ Uploaden</a>
+                </div>
+            </li>
             <li><a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a></li>
             <li><a href="{{ route('tags.index') }}" class="{{ request()->routeIs('tags.*') ? 'active' : '' }}">Tags</a></li>
             <li><a href="{{ route('admin.index') }}" class="{{ request()->routeIs('admin.*') ? 'active' : '' }}">Admin</a></li>
