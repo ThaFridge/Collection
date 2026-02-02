@@ -59,6 +59,7 @@
             <div class="form-group">
                 <label class="form-label">Barcode</label>
                 <input type="text" name="barcode" class="form-control" value="{{ $platform->barcode }}">
+                @include('games._barcode')
             </div>
             <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
                 <button type="submit" class="btn btn-primary btn-sm">Opslaan</button>

@@ -61,6 +61,7 @@
             <div class="form-group">
                 <label class="form-label">Barcode (EAN/UPC)</label>
                 <input type="text" name="barcode" class="form-control" value="{{ old('barcode') }}">
+                @include('games._barcode')
             </div>
         </div>
         <div class="form-row">
