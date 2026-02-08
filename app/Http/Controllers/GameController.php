@@ -110,27 +110,23 @@ class GameController extends Controller
             $game->platforms()->create(array_merge($platformData, ['platform' => $platform]));
         }
 
-        // Fetch achievements and screenshots from RAWG
+        // Fetch achievements from RAWG
         $this->fetchAchievements($game);
-        $this->fetchScreenshots($game);
 
         return redirect()->route('games.show', $game)->with('success', 'Game toegevoegd!');
     }
 
     public function show(Game $game)
     {
-        // Auto-fetch achievements and screenshots if not yet fetched
+        // Auto-fetch achievements if not yet fetched
         if ($game->external_api_id && in_array($game->external_api_source, ['rawg', 'igdb'])) {
             if (!$game->achievements_fetched) {
                 $this->fetchAchievements($game);
             }
-            if ($game->images()->count() === 0) {
-                $this->fetchScreenshots($game);
-            }
             $game->refresh();
         }
 
-        $game->load('platforms', 'images', 'tags', 'achievements');
+        $game->load('platforms', 'tags', 'achievements');
         $allTags = Tag::orderBy('name')->get();
 
         return view('games.show', compact('game', 'allTags'));
@@ -138,7 +134,7 @@ class GameController extends Controller
 
     public function edit(Game $game)
     {
-        $game->load('platforms', 'images');
+        $game->load('platforms');
         return view('games.edit', compact('game'));
     }
 
@@ -303,69 +299,6 @@ class GameController extends Controller
             $game->update(['achievements_fetched' => true, 'achievements_supported' => true]);
         } catch (\Exception $e) {
             // Silently fail - achievements are not critical
-        }
-    }
-
-    public function uploadScreenshot(Request $request, Game $game)
-    {
-        $request->validate([
-            'screenshot' => 'required|image|max:5120',
-        ]);
-
-        if ($game->images()->count() >= 8) {
-            return back()->with('error', 'Maximaal 8 screenshots per game.');
-        }
-
-        $path = $request->file('screenshot')->store('screenshots/' . $game->id, 'public');
-        $sortOrder = $game->images()->max('sort_order') + 1;
-
-        $game->images()->create([
-            'image_path' => $path,
-            'type' => 'screenshot',
-            'sort_order' => $sortOrder,
-        ]);
-
-        return back()->with('success', 'Screenshot toegevoegd!');
-    }
-
-    public function deleteScreenshot(Game $game, \App\Models\GameImage $image)
-    {
-        if ($image->game_id !== $game->id) abort(404);
-
-        if (Storage::disk('public')->exists($image->image_path)) {
-            Storage::disk('public')->delete($image->image_path);
-        }
-        $image->delete();
-
-        return back()->with('success', 'Screenshot verwijderd!');
-    }
-
-    private function fetchScreenshots(Game $game): void
-    {
-        if (!$game->external_api_id || !in_array($game->external_api_source, ['rawg', 'igdb'])) return;
-
-        try {
-            $provider = $this->getProvider($game);
-            if (!$provider || !$provider->isConfigured()) return;
-
-            $urls = $provider->fetchScreenshots($game->external_api_id, 8);
-
-            foreach ($urls as $i => $url) {
-                $contents = file_get_contents($url);
-                if ($contents === false) continue;
-
-                $extension = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
-                $filename = 'screenshots/' . $game->id . '/' . Str::uuid() . '.' . $extension;
-                Storage::disk('public')->put($filename, $contents);
-
-                $game->images()->create([
-                    'image_path' => $filename,
-                    'type' => 'screenshot',
-                    'sort_order' => $i,
-                ]);
-            }
-        } catch (\Exception $e) {
-            // Silently fail
         }
     }
 

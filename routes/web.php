@@ -31,8 +31,6 @@ Route::patch('/platforms/{platform}', [GameController::class, 'updatePlatform'])
 Route::delete('/platforms/{platform}', [GameController::class, 'destroyPlatform'])->name('platforms.destroy');
 Route::patch('/platforms/{platform}/toggle-status', [GameController::class, 'togglePlatformStatus'])->name('platforms.toggle-status');
 Route::post('/games/{game}/refresh-achievements', [GameController::class, 'refreshAchievements'])->name('games.refresh-achievements');
-Route::post('/games/{game}/screenshots', [GameController::class, 'uploadScreenshot'])->name('games.screenshots.store');
-Route::delete('/games/{game}/screenshots/{image}', [GameController::class, 'deleteScreenshot'])->name('games.screenshots.destroy');
 Route::post('/games/{game}/toggle-tag', [TagController::class, 'toggleGameTag'])->name('games.toggle-tag');
 Route::resource('games', GameController::class);
 

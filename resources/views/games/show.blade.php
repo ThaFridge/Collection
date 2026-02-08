@@ -102,52 +102,6 @@
 </div>
 @endif
 
-{{-- Screenshots --}}
-@if($game->images->count())
-<div style="margin-top:2rem;">
-    <h2 style="margin-bottom:1rem;">Screenshots</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));gap:0.75rem;">
-        @foreach($game->images as $image)
-            <div style="position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border);">
-                <img src="{{ asset('storage/' . $image->image_path) }}" alt="Screenshot" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:pointer;" onclick="openLightbox('{{ asset('storage/' . $image->image_path) }}')">
-                <form method="POST" action="{{ route('games.screenshots.destroy', [$game, $image]) }}" style="position:absolute;top:0.35rem;right:0.35rem;">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm" style="padding:0.15rem 0.4rem;font-size:0.7rem;opacity:0.8;">X</button>
-                </form>
-            </div>
-        @endforeach
-    </div>
-</div>
-@endif
-
-@if($game->images->count() < 8)
-<div style="margin-top:1rem;">
-    <form method="POST" action="{{ route('games.screenshots.store', $game) }}" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;">
-        @csrf
-        <input type="file" name="screenshot" accept="image/*" class="form-control" style="max-width:300px;">
-        <button type="submit" class="btn btn-secondary btn-sm">Screenshot uploaden</button>
-    </form>
-</div>
-@endif
-
-{{-- Lightbox --}}
-<div id="lightbox" onclick="closeLightbox()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;cursor:pointer;">
-    <img id="lightbox-img" src="" alt="" style="max-width:90%;max-height:90%;border-radius:8px;">
-</div>
-
-@push('scripts')
-<script>
-function openLightbox(src) {
-    document.getElementById('lightbox-img').src = src;
-    document.getElementById('lightbox').style.display = 'flex';
-}
-function closeLightbox() {
-    document.getElementById('lightbox').style.display = 'none';
-}
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLightbox(); });
-</script>
-@endpush
-
 {{-- Achievements --}}
 @if($game->achievements_fetched && $game->achievements_supported && $game->achievements->count())
 <div style="margin-top:2rem;">
